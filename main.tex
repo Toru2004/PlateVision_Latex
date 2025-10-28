@@ -1,0 +1,50 @@
+\documentclass[final]{mobilereport}
+% Ho Chi Minh Uiniversity of information Technologoy Thesis template
+% Provide by Son Nguyen-Hong, a alumni student from UIT
+% For more detail and new update, please visit to template repository https://github.com/sonnh-uit/HCMUIT_thesistemplate/
+% Need more resources, please visit my blog: https://sonnh.net
+
+
+% Define metadata
+% =========== Thay đổi thông tin tại phần này ===========
+\upperuniname{TRƯỜNG ĐẠI HỌC GIAO THÔNG VẬN TẢI}
+\uniname{THÀNH PHỐ HỒ CHÍ MINH}
+\deptname{KHOA CÔNG NGHỆ THÔNG TIN}
+\title{HỆ THỐNG NHẬN DIỆN BIỂN SỐ}
+\stunamelist{%
+Lê Tuấn Khang - 225110420\\
+Hồ Huỳnh Nhu - 2251120433\\
+Nguyễn Thành Đạt - 2251120413\\
+Nguyễn Hồng Minh - 2251120428\\
+Lê Nguyễn Minh Phúc – 2251120040
+}
+\instruction{Giảng viên hướng dẫn: ThS. Nguyễn Văn Huy}
+\reportplace{TP. HỒ CHÍ MINH, NĂM }
+
+% =========== Hết phần thay đổi thông tin ===========
+\input{chapters/front/glossaries.tex}
+\makeglossaries
+% Begin thesis
+
+\begin{document}
+
+\coverpage%
+% \secondcoverpage%
+
+% Begin above main thesis
+\frontmatter
+\tableofcontents
+\clearpage
+
+\mainthesis
+
+% Main chapter in thesis
+\include{chapters/front/introduction.tex}
+\include{chapters/main/chapter1/container}
+\include{chapters/main/chapter2/container}
+\include{chapters/main/chapter3/container}
+\include{chapters/main/chapter4/container}
+\include{chapters/main/chapter5/container}
+
+% Print references
+\end{document}
