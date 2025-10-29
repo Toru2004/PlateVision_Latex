@@ -6,5 +6,5 @@ Cài Perl và chạy file exe:
 
 Cài extension LaTeX Workshop trong VS Code
 
-Chạy lệnh trong VS Code:
+Chạy lệnh trong VS Code để gen pdf:
  latexmk -pdf main.tex
