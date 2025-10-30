@@ -12,7 +12,7 @@
 \RequirePackage{tikz}
 \RequirePackage[center]{caption}
 \RequirePackage{fancyhdr,hyperref}
-\RequirePackage[english,vietnamese]{babel} % <-- Đổi vị trí tránh lỗi biblatex
+\RequirePackage[english,vietnamese]{babel}
 \RequirePackage[utf8]{vietnam}
 \RequirePackage{listings}
 \RequirePackage{graphicx}
@@ -33,7 +33,7 @@
 \RequirePackage{lscape}
 \RequirePackage{caption}
 \RequirePackage[autostyle,english=american]{csquotes}
-\RequirePackage[backend=biber,sorting=nyt]{biblatex} % <-- Thêm đúng biblatex
+\RequirePackage[backend=biber,sorting=nyt]{biblatex}
 \RequirePackage{mathtools}
 \RequirePackage{lipsum,blindtext}
 \RequirePackage{fancyhdr}
@@ -46,7 +46,7 @@
 \RequirePackage{longtable}
 \RequirePackage{rotating}
 \RequirePackage[utf8]{inputenc}
-\RequirePackage{tocloft} % <-- Thêm tocloft để định nghĩa mục lục
+\RequirePackage{tocloft}
 \RequirePackage{enumitem}
 \usetikzlibrary{calc}
 
