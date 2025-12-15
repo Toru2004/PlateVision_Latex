@@ -1,1 +1,44 @@
 \section{Phạm vi nghiên cứu}
+
+Đề tài ``Bãi đỗ xe thông minh'' tập trung nghiên cứu và xây dựng mô hình hệ thống quản lý bãi đỗ xe tự động, hỗ trợ giám sát -- đặt chỗ -- nhận diện biển số phương tiện. Phạm vi nghiên cứu của đề tài bao gồm các nội dung chính sau:
+
+\begin{itemize}
+    \item Hệ thống phần cứng IoT tại bãi đỗ xe:
+    \begin{itemize}
+        \item Thiết kế mô hình bãi đỗ xe thu nhỏ hoặc hệ thống thử nghiệm.
+        \item Sử dụng các cảm biến siêu âm, RFID/thẻ từ, camera để phát hiện phương tiện và trạng thái chỗ đỗ.
+        \item Kết nối thiết bị với vi điều khiển (ESP32/Arduino hoặc tương đương) để truyền dữ liệu lên máy chủ.
+    \end{itemize}
+
+    \item Nền tảng quản lý tập trung (Web Admin):
+    \begin{itemize}
+        \item Theo dõi tình trạng bãi xe theo thời gian thực.
+        \item Thêm/xóa/chỉnh sửa thông tin xe, người dùng.
+        \item Xem báo cáo thống kê doanh thu.
+        \item Hệ thống backend cung cấp API xử lý dữ liệu từ IoT và ứng dụng người dùng.
+    \end{itemize}
+
+    \item Ứng dụng di động cho người dùng:
+    \begin{itemize}
+        \item Xem thông tin tài khoản, nội dung quy định của hệ thống.
+        \item Xem trạng thái, check-in/check-out phương tiện.
+        \item Xem lịch sử gửi xe, thông báo trạng thái.
+    \end{itemize}
+
+    \item Hệ thống AI nhận diện biển số xe (LPR -- License Plate Recognition):
+    \begin{itemize}
+        \item Triển khai mô hình nhận diện biển số bằng YOLO + CRNN.
+        \item Tự động ghi nhận dữ liệu biển số và đối chiếu thông tin với hệ thống quản lý.
+    \end{itemize}
+
+    \item Giới hạn phạm vi của đề tài:
+    \begin{itemize}
+        \item Hệ thống được xây dựng ở mức prototype, quy mô thử nghiệm.
+        \item Chưa xử lý nâng cao như biển số mờ, điều kiện ánh sáng kém, quy mô lớn ngoài thực tế.
+        \item Tính năng thanh toán trực tuyến mới dừng lại ở mức mô phỏng tích hợp cơ bản.
+        \item Hệ thống bảo mật ở mức cơ bản, chưa đạt tiêu chuẩn thương mại hóa.
+    \end{itemize}
+\end{itemize}
+
+Phạm vi nghiên cứu tập trung vào việc mô hình hóa hệ thống, xây dựng phiên bản thử nghiệm khả thi, đánh giá khả năng hoạt động của IoT -- AI -- Web -- App trong một hệ thống tích hợp, làm cơ sở phát triển hoàn thiện trong tương lai.
+
