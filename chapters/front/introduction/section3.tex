@@ -1,1 +1,72 @@
 \section{Phương pháp nghiên cứu}
+
+\subsection{Phương pháp khảo sát thực tiễn}
+
+Để thu thập thông tin phục vụ cho việc đánh giá thực trạng sử dụng bãi giữ xe tại trường, nhóm tiến hành khảo sát thực tiễn đối với sinh viên thường xuyên gửi xe trong khuôn viên trường. Tổng cộng \textbf{151 sinh viên} đã tham gia khảo sát.
+
+Khảo sát được thực hiện theo hình thức trực tuyến thông qua Google Forms với các nội dung như sau:
+
+\begin{itemize}
+    \item Thói quen sử dụng bãi giữ xe hiện tại
+    \item Mức độ gặp sự cố khi sử dụng thẻ giữ xe truyền thống
+    \item Mức độ bất tiện mà người dùng cảm nhận
+    \item Nhu cầu của người dùng đối với các giải pháp thay thế như giữ xe không cần thẻ
+\end{itemize}
+
+Dữ liệu sau khi thu thập được dùng làm cơ sở đánh giá thực trạng và xác định các vấn đề tồn tại trong quy trình giữ xe của sinh viên.
+
+\subsection{Phương pháp phân tích - tổng hợp}
+
+\subsubsection{Phương pháp thống kê mô tả}
+
+Dữ liệu thu thập từ Google Forms được xuất sang định dạng Excel để xử lý. Nhóm sử dụng phần mềm Microsoft Excel để:
+
+\begin{itemize}
+    \item Tính toán tỷ lệ phần trăm các câu trả lời
+    \item Lập biểu đồ tròn, biểu đồ cột để trực quan hóa dữ liệu
+    \item Xác định các vấn đề phổ biến nhất mà người dùng gặp phải
+\end{itemize}
+
+\subsubsection{Phương pháp so sánh và đối chiếu}
+
+Kết quả khảo sát được so sánh với các nghiên cứu tương tự về hệ thống quản lý bãi giữ xe thông minh đã công bố, nhằm đánh giá mức độ phổ biến của vấn đề và tính cấp thiết của giải pháp.
+
+\subsubsection{Phương pháp tổng hợp}
+
+Từ dữ liệu khảo sát và tài liệu nghiên cứu, nhóm tổng hợp để:
+
+\begin{itemize}
+    \item Xác định các vấn đề tồn tại trong hệ thống giữ xe hiện tại
+    \item Làm rõ nhu cầu và kỳ vọng của người dùng
+    \item Đề xuất các yêu cầu chức năng cho hệ thống mới
+\end{itemize}
+
+\subsection{Phương pháp mô phỏng}
+
+Để kiểm chứng tính khả thi của giải pháp đề xuất, nhóm tiến hành xây dựng mô hình thử nghiệm bao gồm ba thành phần chính:
+
+\subsubsection{Ứng dụng di động (Mobile App)}
+
+Ứng dụng dành cho người dùng (sinh viên, bảo vệ) được phát triển trên nền tảng Android sử dụng Android Studio. Ứng dụng cho phép sinh viên đăng ký thông tin xe, theo dõi lịch sử ra vào bãi giữ xe và thanh toán phí trực tuyến. Ngoài ra ứng dụng cho phép bảo vệ xem lịch sử ra vào của từng xe, trạng thái cổng và có thể quét QR để yêu cầu mở cổng khi cần thiết.
+
+\subsubsection{Ứng dụng nhận diện biển số xe (Desktop App)}
+
+Hệ thống nhận diện biển số xe được phát triển dưới dạng ứng dụng desktop, sử dụng các thuật toán xử lý ảnh và học máy để tự động nhận diện biển số xe khi vào/ra bãi. Ứng dụng được cài đặt tại cổng ra vào bãi giữ xe, kết nối với camera để thu thập, xử lý hình ảnh thời gian thực và gửi lên cơ sở dữ liệu.
+
+\subsubsection{Trang web quản trị (Web Admin)}
+
+Trang web quản trị được xây dựng để phục vụ nhân viên quản lý bãi xe, cho phép giám sát tình trạng bãi xe, quản lý thông tin sinh viên, bảo vệ, tra cứu lịch sử ra/vào, trạng thái bãi đỗ và thống kê doanh thu. 
+
+\subsubsection{Quy trình thử nghiệm}
+
+Hệ thống được thử nghiệm trên môi trường mô phỏng với các kịch bản sử dụng thực tế:
+
+\begin{itemize}
+    \item Kiểm tra độ chính xác nhận diện biển số xe trong các điều kiện ánh sáng khác nhau
+    \item Đánh giá thời gian phản hồi của hệ thống từ lúc xe vào đến khi cổng mở/đóng
+    \item Thử nghiệm đồng bộ dữ liệu giữa ba thành phần (Mobile App, Desktop App, Web Admin)
+    \item Thu thập phản hồi từ người dùng thử nghiệm để cải tiến giao diện và tính năng
+\end{itemize}
+
+Kết quả thực nghiệm được ghi nhận và phân tích để đánh giá hiệu quả của giải pháp so với hệ thống giữ xe truyền thống.
+
