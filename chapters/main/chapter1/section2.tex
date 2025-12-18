@@ -1,9 +1,22 @@
-\section{Mục tiêu và phạm vi của đề tài}
+\section{Các mô hình học sâu trong thị giác máy tính}
 
-\subsection{Mục tiêu đề tài}
+\subsection{CNN và YOLO}
 
-Mục tiêu của đề tài “Bãi đỗ xe thông minh tích hợp AI” là xây dựng một hệ thống quản lý bãi xe hiện đại, ứng dụng công nghệ nhận diện biển số, khuôn mặt và logo xe kết hợp với IoT và thanh toán điện tử nhằm tối ưu hóa quy trình ra vào bãi, nâng cao tính an toàn, minh bạch và tiện lợi cho người dùng. Hệ thống hướng tới việc tự động hóa kiểm soát xe máy và ô tô, giảm bớt sự phụ thuộc vào con người, đồng thời hỗ trợ bảo vệ và quản trị viên trong công tác giám sát, thống kê, xử lý sự cố. Ngoài ra, hệ thống còn tích hợp cổng thanh toán VNPAY giúp người dùng dễ dàng thanh toán phí giữ xe không dùng tiền mặt, đảm bảo tính nhanh chóng và an toàn.
+Thị giác máy tính (Computer Vision) là một lĩnh vực quan trọng trong trí tuệ nhân tạo, tập trung vào việc giúp máy tính có khả năng hiểu và phân tích thông tin từ hình ảnh hoặc video. Trong đó, phát hiện đối tượng (object detection) là bài toán nhằm xác định vị trí và phân loại các đối tượng xuất hiện trong ảnh.
 
-\subsection{Phạm vi đề tài}
+\textbf{Convolutional Neural Network (CNN)} là một mô hình học sâu được thiết kế đặc biệt cho dữ liệu hình ảnh. CNN sử dụng các lớp tích chập (convolutional layers) để tự động trích xuất đặc trưng từ ảnh đầu vào, giúp mô hình nhận biết các đặc điểm như cạnh, hình dạng và cấu trúc của đối tượng. Nhờ khả năng học đặc trưng hiệu quả, CNN đã trở thành nền tảng cho nhiều bài toán trong thị giác máy tính như phân loại ảnh, phát hiện đối tượng và nhận dạng khuôn mặt.
 
-Phạm vi của đề tài tập trung triển khai cho hai loại phương tiện chính là xe máy và ô tô. Đối với xe máy, hệ thống quét biển số và nhận diện khuôn mặt người điều khiển khi ra vào. Đối với ô tô, khi vào sẽ nhận diện biển số, quét phần đuôi xe, chụp và lưu hình ảnh đầu xe, đồng thời nhận diện logo, khi ra sẽ tiếp tục quét biển số cả đầu và đuôi xe, sử dụng mạng Siamese để so sánh hình ảnh và logo xe nhằm xác thực. Hệ thống hỗ trợ quét mã QR do bảo vệ cấp trong các trường hợp đặc biệt. Ứng dụng mobile cho người dùng cung cấp chức năng đăng ký, đăng nhập, quản lý thông tin phương tiện, thao tác rời bãi và thanh toán phí giữ xe. Ứng dụng mobile cho bảo vệ được phép theo dõi lịch sử xe ra vào, tạo và gửi yêu cầu mở cổng cho quản trị viên. Trang web dành cho admin được xây dựng để quản lý, thống kê lượt xe ra vào và xử lý yêu cầu từ bảo vệ. Về phần IoT, hệ thống cổng ra vào được tự động hóa, hiển thị hình ảnh lên màn hình và phát cảnh báo khi phát hiện hành vi trái phép.
+Dựa trên nền tảng CNN, \textbf{YOLO (You Only Look Once)} là một mô hình phát hiện đối tượng theo thời gian thực, cho phép xác định đồng thời vị trí và nhãn của các đối tượng chỉ trong một lần suy luận. YOLO chia ảnh đầu vào thành các lưới và dự đoán bounding box cùng xác suất lớp cho từng đối tượng. Ưu điểm nổi bật của YOLO là tốc độ xử lý nhanh, độ chính xác cao và khả năng triển khai hiệu quả trong các hệ thống yêu cầu xử lý thời gian thực.
+
+Trong phạm vi đề tài, mô hình YOLO được sử dụng để phát hiện các đối tượng cần quan tâm trong hình ảnh hoặc video, làm cơ sở cho các bước xử lý và nhận dạng tiếp theo trong hệ thống.
+
+\subsection{Siamese Network và DeepFace}
+
+Bên cạnh bài toán phát hiện, nhận dạng (recognition) là bước nâng cao nhằm xác định danh tính hoặc mức độ tương đồng giữa các đối tượng đã được phát hiện. Bài toán này thường được áp dụng trong các hệ thống nhận dạng khuôn mặt hoặc so sánh các đối tượng có hình dạng tương tự nhau, chẳng hạn như phương tiện giao thông.
+
+\textbf{Siamese Network} là một kiến trúc mạng nơ-ron đặc biệt gồm hai hoặc nhiều nhánh mạng có chung trọng số. Mô hình này không trực tiếp phân loại đối tượng mà học cách đo lường mức độ tương đồng giữa hai đầu vào thông qua không gian đặc trưng. Siamese Network thường được sử dụng trong các bài toán so sánh cặp ảnh, nhận dạng khuôn mặt, chữ viết tay hoặc nhận dạng các đối tượng có hình dạng tương tự nhau.
+
+\textbf{DeepFace} là một mô hình học sâu chuyên biệt cho bài toán nhận dạng khuôn mặt, sử dụng mạng nơ-ron sâu để trích xuất đặc trưng khuôn mặt và biểu diễn chúng dưới dạng vector đặc trưng. Thông qua việc so sánh khoảng cách giữa các vector này, hệ thống có thể xác định hai khuôn mặt có thuộc cùng một người hay không. DeepFace cho phép nhận dạng khuôn mặt với độ chính xác cao ngay cả khi có sự thay đổi về góc nhìn, ánh sáng hoặc biểu cảm.
+
+Trong đề tài, Siamese Network và DeepFace được áp dụng cho các bài toán nhận dạng như nhận dạng khuôn mặt và so sánh các đối tượng có đặc điểm tương đồng (ví dụ: xe có hình dạng giống nhau). Sự kết hợp giữa các mô hình phát hiện và nhận dạng giúp hệ thống hoạt động chính xác, linh hoạt và phù hợp với các kịch bản thực tế.
+
