@@ -1,0 +1,39 @@
+\section{Các thành phần công nghệ của hệ thống}
+
+\subsection{IoT và thiết bị ngoại vi}
+
+\begin{enumerate}[label=\alph*)]
+    \item \textbf{IoT}
+    
+    Internet of Things (IoT) là mô hình kết nối các thiết bị vật lý với Internet nhằm thu thập, trao đổi và xử lý dữ liệu một cách tự động. Trong hệ thống IoT, các thiết bị ngoại vi đóng vai trò là điểm tiếp nhận dữ liệu từ môi trường thực, đồng thời thực thi các hành động điều khiển dựa trên tín hiệu nhận được từ hệ thống trung tâm.
+        
+    \item \textbf{ESP32}
+    
+    ESP32 là một vi điều khiển phổ biến trong các ứng dụng IoT nhờ tích hợp sẵn Wi-Fi và Bluetooth, hiệu năng xử lý cao, tiêu thụ điện năng thấp và khả năng lập trình linh hoạt. Trong hệ thống của đề tài, ESP32 giữ vai trò trung tâm, chịu trách nhiệm kết nối với các cảm biến và thiết bị chấp hành, đồng thời truyền dữ liệu lên máy chủ thông qua mạng Internet.
+   
+    \item \textbf{Arduino}
+    
+    Arduino được sử dụng như một nền tảng hỗ trợ lập trình và điều khiển phần cứng, giúp đơn giản hóa quá trình phát triển hệ thống IoT. Thông qua môi trường Arduino IDE, người phát triển có thể dễ dàng cấu hình, nạp chương trình và kiểm soát hoạt động của các thiết bị ngoại vi được kết nối với ESP32.
+
+    \item \textbf{Servo}
+    
+    Servo là một thiết bị chấp hành (actuator) được sử dụng để thực hiện các thao tác cơ học với độ chính xác cao, chẳng hạn như xoay, đóng/mở hoặc điều chỉnh vị trí. Trong hệ thống IoT của đề tài, servo được điều khiển thông qua tín hiệu từ ESP32 để thực hiện các hành động theo kịch bản định sẵn hoặc theo yêu cầu từ ứng dụng di động và hệ thống web quản trị.
+\end{enumerate}
+
+\subsection{Ứng dụng Mobile và Web Admin}
+
+\begin{enumerate}[label=\alph*)]
+
+    \item \textbf{Ứng dụng Mobile}
+    
+    Ứng dụng di động đóng vai trò là cầu nối trực tiếp giữa người dùng và hệ thống IoT. Trong đề tài, ứng dụng mobile được phát triển bằng ngôn ngữ \textbf{Kotlin} trên nền tảng \textbf{Android}, nhằm đảm bảo hiệu năng cao, tính ổn định và khả năng tương thích với các thiết bị Android hiện nay.
+    
+    Ứng dụng mobile được thiết kế để phục vụ nhiều nhóm đối tượng người dùng khác nhau, bao gồm \textbf{khách hàng} và \textbf{bảo vệ}. Mỗi nhóm người dùng được phân quyền chức năng phù hợp với vai trò và nhiệm vụ của từng đối tượng. Cụ thể, khách hàng có thể theo dõi trạng thái hệ thống, nhận thông báo và thực hiện các thao tác điều khiển cơ bản; trong khi đó, bảo vệ có quyền giám sát chi tiết hơn, xử lý các cảnh báo và kiểm tra lịch sử hoạt động của thiết bị.
+
+    \item \textbf{Web Admin}
+    
+    Bên cạnh ứng dụng di động, hệ thống \textbf{web admin} được xây dựng bằng framework \textbf{Nuxt.js} nhằm phục vụ công tác quản trị và vận hành hệ thống. Web admin cung cấp giao diện cho quản trị viên trong việc quản lý người dùng và thiết bị IoT, theo dõi dữ liệu hoạt động theo thời gian thực, thực hiện thống kê và phân tích dữ liệu, cũng như cấu hình các kịch bản điều khiển cho hệ thống.
+    
+    Việc sử dụng Nuxt.js giúp hệ thống web admin có giao diện thân thiện, tốc độ tải nhanh và khả năng mở rộng tốt trong tương lai. Sự kết hợp giữa ứng dụng mobile và web admin tạo thành một hệ sinh thái hoàn chỉnh, hỗ trợ quản lý và điều khiển hệ thống IoT một cách hiệu quả, đồng bộ và linh hoạt.
+
+\end{enumerate}
