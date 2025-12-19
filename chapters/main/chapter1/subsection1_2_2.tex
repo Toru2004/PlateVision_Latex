@@ -1,0 +1,47 @@
+\subsection{Khoảng trống nghiên cứu}
+
+Từ phân tích các nghiên cứu liên quan tại Bảng \ref{tab:related_work}, 
+có thể thấy các hệ thống hiện tại chủ yếu giải quyết từng thành phần 
+riêng lẻ và chưa đáp ứng được yêu cầu quản lý toàn diện cho cả xe máy 
+và ô tô với các cơ chế xác thực phù hợp cho từng loại phương tiện.
+
+Cụ thể, các khoảng trống nghiên cứu bao gồm:
+
+\begin{itemize}
+    \item Thiếu phân vùng quản lý theo loại phương tiện:
+    Các hệ thống chưa phân biệt rõ ràng giữa bãi xe máy và bãi ô tô, 
+    dẫn đến việc áp dụng cùng một phương pháp nhận dạng cho cả hai loại 
+    phương tiện, không tối ưu về độ chính xác và bảo mật.
+    
+    \item Thiếu cơ chế xác thực đa lớp phù hợp:
+    Hệ thống IoT chỉ dựa vào cảm biến; hệ thống AI chỉ nhận dạng biển số xe. 
+    Chưa có nghiên cứu nào kết hợp nhận dạng khuôn mặt cho xe máy và nhận 
+    dạng đặc trưng xe (logo, đầu xe) cho ô tô nhằm tăng cường bảo mật.
+    
+    \item Thiếu khả năng theo dõi và so sánh phương tiện:
+    Các hệ thống chưa có cơ chế theo dõi phương tiện từ lúc vào đến lúc ra, 
+    đặc biệt là khả năng so sánh đặc trưng xe ô tô (sử dụng mạng Siamese) 
+    để đảm bảo xe ra là chính xe đã vào.
+    
+    \item Chưa tích hợp quản lý thời gian thực qua ứng dụng di động:
+    Người dùng không thể theo dõi tình trạng xe, xác nhận rời bãi trước hoặc 
+    nhận cảnh báo an ninh khi có dấu hiệu bất thường.
+\end{itemize}
+
+Do đó, đề tài nghiên cứu này xây dựng hệ thống quản lý bãi đỗ xe thông minh tích hợp, 
+khắc phục các khoảng trống trên thông qua các giải pháp sau:
+
+\begin{itemize}
+    \item Phân vùng quản lý riêng biệt cho xe máy và ô tô.
+    
+    
+
+    \item Áp dụng xác thực đa lớp: nhận dạng biển số xe kết hợp nhận dạng 
+    khuôn mặt cho xe máy và nhận dạng biển số kết hợp nhận dạng logo, đầu 
+    xe Siamese cho ô tô để so sánh đặc trưng xe lúc ra/vào bãi.
+
+    \item Tích hợp ứng dụng Mobile cho phép người dùng theo dõi xe, xác nhận 
+    rời bãi và nhận cảnh báo an ninh thời gian thực khi phát hiện hành vi trộm cắp.
+    \item Hệ thống tự động đăng ký khi người dùng chưa kịp đăng ký tài khoản
+
+\end{itemize}

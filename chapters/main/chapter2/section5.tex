@@ -1,0 +1,36 @@
+\section{Thiết kế chi tiết}
+
+\subsection{Module nhận diện biển số xe}
+Module nhận diện biển số xe (License Plate Recognition – LPR) được xây dựng nhằm tự động phát hiện và trích xuất thông tin biển số từ hình ảnh hoặc luồng video camera giám sát tại bãi đỗ. Module này đóng vai trò nền tảng trong việc định danh phương tiện, phục vụ cho các chức năng kiểm soát ra/vào và quản lý lịch sử đỗ xe.
+
+Quy trình xử lý của module bao gồm các bước chính: (1) thu nhận hình ảnh từ camera, (2) phát hiện vùng chứa biển số bằng mô hình học sâu (CNN/YOLO), (3) tiền xử lý ảnh (chuẩn hóa kích thước, khử nhiễu, tăng cường độ tương phản), và (4) nhận dạng ký tự trên biển số bằng mô hình OCR chuyên biệt. Kết quả đầu ra là chuỗi ký tự biển số cùng với độ tin cậy tương ứng.
+
+Module được thiết kế theo hướng độc lập, cho phép triển khai dưới dạng service riêng biệt, dễ dàng mở rộng và tích hợp với các module khác thông qua API.
+
+\subsection{Module nhận diện khuôn mặt/xe}
+Module nhận diện khuôn mặt và nhận diện xe được xây dựng nhằm tăng cường khả năng xác thực và giảm thiểu gian lận trong hệ thống. Module này cho phép đối sánh khuôn mặt người dùng hoặc đặc trưng xe với dữ liệu đã đăng ký trước đó.
+
+Đối với nhận diện khuôn mặt, hệ thống sử dụng các mô hình học sâu như Siamese Network hoặc DeepFace để trích xuất vector đặc trưng (embedding) từ ảnh khuôn mặt. Các vector này được so sánh bằng các thước đo khoảng cách (cosine hoặc Euclidean) để xác định mức độ tương đồng.
+
+Đối với nhận diện xe, ngoài biển số, module tập trung vào các đặc trưng tổng thể của xe (màu sắc, kiểu dáng, logo, hình dạng thân xe). Cách tiếp cận này giúp nhận diện các trường hợp biển số bị che khuất hoặc làm giả.
+
+\subsection{Module quản lý bãi đỗ}
+Module quản lý bãi đỗ chịu trách nhiệm điều phối toàn bộ hoạt động trong bãi xe, bao gồm quản lý vị trí đỗ, trạng thái chỗ trống, lịch sử ra/vào và thông tin phương tiện. Module này đóng vai trò trung tâm trong việc tổng hợp và xử lý dữ liệu từ các module nhận diện.
+
+Dữ liệu được lưu trữ trong cơ sở dữ liệu tập trung, hỗ trợ các thao tác truy vấn, thống kê và báo cáo. Module cho phép cấu hình số lượng khu vực, số chỗ đỗ, cũng như các quy tắc vận hành (thời gian đỗ tối đa, cảnh báo quá hạn).
+
+Ngoài ra, module còn cung cấp các API để web admin và ứng dụng mobile có thể truy cập, theo dõi tình trạng bãi xe theo thời gian thực.
+
+\subsection{Ứng dụng mobile}
+Ứng dụng mobile được phát triển nhằm cung cấp giao diện tương tác trực tiếp cho người dùng cuối. Thông qua ứng dụng, người dùng có thể đăng ký tài khoản, quản lý thông tin cá nhân, đăng ký phương tiện và theo dõi trạng thái xe trong bãi đỗ.
+
+Ứng dụng hỗ trợ nhận thông báo thời gian thực (push notification) về các sự kiện quan trọng như xe vào/ra bãi, sắp hết thời gian đỗ hoặc phát hiện bất thường. Giao diện được thiết kế theo hướng thân thiện, dễ sử dụng và phù hợp với nhiều đối tượng người dùng.
+
+Về mặt kỹ thuật, ứng dụng mobile giao tiếp với hệ thống backend thông qua các API bảo mật, đảm bảo tính toàn vẹn và an toàn của dữ liệu.
+
+\subsection{Tích hợp các module}
+Các module trong hệ thống được tích hợp theo kiến trúc phân tán, trong đó mỗi module đảm nhiệm một chức năng riêng biệt nhưng có khả năng phối hợp chặt chẽ với nhau. Việc giao tiếp giữa các module được thực hiện thông qua API hoặc cơ chế message queue nhằm đảm bảo tính mở rộng và khả năng chịu lỗi.
+
+Luồng xử lý tổng thể bắt đầu từ việc camera ghi nhận hình ảnh, sau đó dữ liệu được chuyển đến các module nhận diện để phân tích. Kết quả nhận diện được gửi về module quản lý bãi đỗ để cập nhật trạng thái hệ thống và đồng bộ với ứng dụng mobile cũng như web admin.
+
+Thiết kế tích hợp này giúp hệ thống hoạt động linh hoạt, dễ dàng nâng cấp từng module riêng lẻ mà không ảnh hưởng đến toàn bộ kiến trúc.

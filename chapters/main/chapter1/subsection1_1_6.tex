@@ -1,0 +1,74 @@
+\subsection{Các công nghệ và kiến trúc hệ thống đề xuất}
+
+Hệ thống quản lý bãi đỗ xe thông minh được xây dựng dựa trên sự tích hợp
+giữa các công nghệ Internet of Things (IoT), trí tuệ nhân tạo (AI) và các
+nền tảng ứng dụng hiện đại, nhằm đảm bảo khả năng nhận dạng chính xác,
+xử lý thời gian thực và vận hành ổn định trong môi trường thực tế.
+
+\subsubsection{Vi điều khiển ESP32 và chức năng IoT trong hệ thống bãi đỗ xe}
+
+ESP32 được sử dụng làm vi điều khiển trung tâm trong mô hình hệ thống IoT
+mô phỏng, nhằm minh họa nguyên lý kết nối, điều khiển và giám sát thiết bị
+trong bãi đỗ xe thông minh. Việc sử dụng ESP32 giúp hệ thống dễ triển khai
+và phù hợp cho mục đích nghiên cứu.
+
+Chức năng IoT trong mô hình hệ thống:
+\begin{itemize}
+    \item Mô phỏng việc nhận lệnh điều khiển theo thời gian thực từ hệ thống trung tâm;
+    \item Mô phỏng điều khiển cổng ra vào thông qua servo motor;
+    \item Mô phỏng việc thu thập dữ liệu từ các cảm biến để phát hiện xe và vật cản;
+    \item Mô phỏng cơ chế cảnh báo khi phát hiện tác động bất thường lên cổng;
+    \item Gửi trạng thái hoạt động của hệ thống về server để phục vụ giám sát.
+\end{itemize}
+
+
+
+\subsubsection{Ứng dụng di động với Kotlin Jetpack Compose}
+
+Ứng dụng Android được phát triển bằng Kotlin và Jetpack Compose theo mô hình
+UI khai báo (declarative), giúp đơn giản hóa việc quản lý giao diện và trạng thái.
+Các chức năng chính:
+\begin{itemize}
+    \item Đăng nhập/đăng ký người dùng;
+    \item Đăng ký thông tin cá nhân phương tiện;
+    \item Thực hiện check-in/check-out;
+    \item Xem lịch sử ra vào (bảo vệ) và nhận thông báo thời gian thực.
+\end{itemize}
+
+\subsubsection{Hệ thống web quản trị với Nuxt.js}
+Hệ thống web quản trị được xây dựng trên nền tảng Nuxt.js, cung cấp giao diện
+quản lý bãi đỗ xe trực quan và hiệu quả cho quản trị viên.
+Chức năng chính của dashboard:
+\begin{itemize}
+    \item Theo dõi số lượng xe và tình trạng bãi đỗ;
+    \item Quản lý phương tiện và người dùng;
+    \item Xuất báo cáo thống kê;
+    \item Cập nhật dữ liệu theo thời gian thực.
+\end{itemize}
+
+\subsubsection{Luồng xử lý và logic quyết định}
+
+Quyết định mở cổng được đưa ra dựa trên kết quả nhận dạng và xác thực:
+
+\begin{equation}
+\text{OPEN\_GATE} =
+\begin{cases}
+\text{True}, & \text{if } (plate\_match \land auth\_match) \\
+\text{False}, & \text{otherwise}
+\end{cases}
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item $\text{OPEN\_GATE}$: Trạng thái điều khiển cổng (mở hoặc đóng);
+    \item $\text{plate\_match}$: Kết quả so khớp biển số xe với cơ sở dữ liệu
+    (True nếu trùng khớp);
+    \item $\text{auth\_match}$: Kết quả xác thực người dùng hoặc phương tiện
+    (ví dụ: khuôn mặt, phương tiện đã đăng ký);
+    \item $\land$: Phép toán logic \textit{AND}.
+\end{itemize}
+
+
+
+Luồng xử lý này đảm bảo hệ thống vận hành chính xác, an ninh và phù hợp với
+mô hình bãi đỗ xe thông minh trong thực tế.

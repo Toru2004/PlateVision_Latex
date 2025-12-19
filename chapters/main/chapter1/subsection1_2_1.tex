@@ -1,0 +1,30 @@
+\subsection{Các nghiên cứu liên quan đến hệ thống bãi đỗ xe thông minh}
+
+Các nghiên cứu về hệ thống bãi đỗ xe thông minh có thể được phân loại 
+theo ba hướng tiếp cận chính như Bảng \ref{tab:related_work}.
+
+\begin{table}[H]
+\centering
+\caption{Tổng hợp các nghiên cứu liên quan về hệ thống bãi đỗ xe thông minh}
+\label{tab:related_work}
+\begin{tabular}{|p{3cm}|p{4cm}|p{3.5cm}|p{3.5cm}|}
+\hline
+\textbf{Hướng nghiên cứu} & \textbf{Đặc điểm} & \textbf{Ưu điểm} & \textbf{Nhược điểm} \\
+\hline
+Dựa trên IoT và cảm biến & 
+Sử dụng cảm biến siêu âm, hồng ngoại hoặc RFID để phát hiện trạng thái chỗ đỗ và truyền dữ liệu thời gian thực & 
+Kiến trúc đơn giản, chi phí thấp, dễ triển khai cho quy mô nhỏ và vừa & 
+Độ chính xác phụ thuộc môi trường, không nhận dạng phương tiện cụ thể, an ninh thấp \\
+\hline
+Dựa trên thị giác máy tính và AI & 
+Ứng dụng mô hình học sâu (CNN, YOLO) để phát hiện phương tiện, nhận dạng biển số xe (ANPR) & 
+Độ chính xác cao, giảm phụ thuộc cảm biến vật lý, mở rộng được cho nhiều bài toán & 
+Yêu cầu tài nguyên lớn, chỉ tập trung nhận dạng, chưa tích hợp điều khiển cổng thời gian thực \\
+\hline
+Hệ thống tự động không tiếp xúc & 
+Kết hợp ứng dụng di động/web để quản lý người dùng và phương tiện, thay thế thẻ RFID & 
+Tăng tự động hóa, cải thiện trải nghiệm người dùng, giảm can thiệp thủ công & 
+Thiếu xác thực đa lớp, kiểm soát an ninh thấp, chưa đồng bộ giữa AI-IoT-quản trị \\
+\hline
+\end{tabular}
+\end{table}
