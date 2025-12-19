@@ -1,0 +1,44 @@
+\subsection{Công nghệ nhận dạng khuôn mặt (DeepFace)}
+
+DeepFace là kiến trúc mạng nơ-ron tích chập (CNN) sâu được phát triển bởi 
+Facebook, đạt độ chính xác 97.35\% trên bộ dữ liệu LFW, gần với khả năng 
+nhận dạng của con người.
+
+Các bước xử lý trong DeepFace:
+\begin{itemize}
+    \item \textbf{Phát hiện khuôn mặt}: Xác định vị trí khuôn mặt trong ảnh đầu vào.
+    \item \textbf{Chuẩn hóa (Alignment)}: Căn chỉnh khuôn mặt về tư thế chuẩn 
+    dựa trên các điểm đặc trưng.
+    \item \textbf{Trích xuất đặc trưng}: Đưa ảnh qua mạng CNN để tạo vector 
+    đặc trưng (embedding).
+    \item \textbf{So khớp (Verification)}: Đánh giá độ tương đồng giữa các 
+    vector đặc trưng.
+\end{itemize}
+
+Độ tương đồng giữa hai vector đặc trưng $\mathbf{f}_1$ và $\mathbf{f}_2$ 
+được tính bằng độ đo cosine:
+\begin{equation}
+\text{sim}(\mathbf{f}_1, \mathbf{f}_2) =
+\frac{\mathbf{f}_1 \cdot \mathbf{f}_2}
+{\|\mathbf{f}_1\| \|\mathbf{f}_2\|}
+\end{equation}
+
+Giá trị $\text{sim}(\mathbf{f}_1, \mathbf{f}_2) \in [-1,1]$, giá trị càng 
+lớn thể hiện độ tương đồng càng cao. Việc xác thực được thực hiện bằng cách 
+so sánh giá trị này với ngưỡng xác định trước.\\
+\textbf{Ứng dụng trong hệ thống bãi đỗ xe máy:}
+\begin{itemize}
+    \item DeepFace được tích hợp để xác thực khuôn mặt người lái xe máy, nhằm tăng cường bảo mật cho hệ thống.
+    
+    \item Khi xe máy vào bãi, camera chụp ảnh khuôn mặt người lái và trích xuất vector đặc trưng (embedding) $\mathbf{f}_{in}$, sau đó lưu cùng với thông tin biển số xe vào cơ sở dữ liệu.
+    
+    \item Khi xe ra bãi, hệ thống chụp lại khuôn mặt người lái hiện tại, trích xuất embedding $\mathbf{f}_{out}$ và tính độ tương đồng giữa hai embedding bằng công thức:
+    
+    \[
+    \text{sim}(\mathbf{f}_{in}, \mathbf{f}_{out}) > \tau_{face}
+    \]
+    
+    \item Nếu độ tương đồng lớn hơn ngưỡng $\tau_{face}$ (thường $\tau_{face} \geq 0.6$), người lái được xác nhận là chủ xe hợp lệ và cổng sẽ tự động mở.
+    
+    \item Ngược lại, hệ thống cảnh báo hành vi bất thường và gửi thông báo đến ứng dụng Mobile của chủ xe, giúp phát hiện các trường hợp xe bị trộm hoặc sử dụng trái phép.
+\end{itemize}

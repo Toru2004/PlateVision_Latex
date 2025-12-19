@@ -1,0 +1,19 @@
+\subsection{Hệ thống nhận dạng hình ảnh (Computer Vision)}
+
+Computer Vision là lĩnh vực cho phép máy tính hiểu và xử lý thông tin từ hình ảnh. Các bước xử lý cơ bản:
+
+\textbf{Tiền xử lý ảnh:}
+\begin{itemize}
+    \item \textbf{Grayscale}: $I_{gray} = 0.299R + 0.587G + 0.114B$
+    \item \textbf{Normalization}: $I_{norm} = \frac{I - \mu}{\sigma}$
+    \item \textbf{Histogram Equalization}: Tăng độ tương phản
+\end{itemize}
+
+\textbf{Trích xuất đặc trưng:}
+\begin{itemize}
+    \item Edge detection (Sobel, Canny)
+    \item Feature descriptors (SIFT, HOG)
+    \item Deep features (CNN)
+\end{itemize}
+
+\textbf{Ứng dụng trong hệ thống:} Tiền xử lý ảnh từ camera, chuẩn hóa trước khi đưa vào các models AI.

@@ -1,0 +1,83 @@
+% \subsection{Mạng nơ-ron tích chập (CNN)}
+
+% Mạng nơ-ron tích chập (Convolutional Neural Network – CNN) là kiến trúc mạng học sâu được thiết kế để xử lý dữ liệu dạng lưới, đặc biệt là hình ảnh. CNN khai thác phép tích chập nhằm trích xuất các đặc trưng không gian quan trọng từ ảnh đầu vào.
+
+% Kiến trúc CNN bao gồm ba thành phần chính:
+% \begin{itemize}
+%     \item \textbf{Lớp tích chập (Convolution)}: Áp dụng các bộ lọc để trích xuất đặc trưng cục bộ từ ảnh.
+%     \item \textbf{Lớp gộp (Pooling)}: Giảm kích thước không gian của đặc trưng, giúp giảm nhiễu và chi phí tính toán.
+%     \item \textbf{Lớp kết nối đầy đủ (Fully Connected)}: Thực hiện phân loại dựa trên các đặc trưng đã học.
+% \end{itemize}
+
+% Phép tích chập tại một vị trí $(i,j)$ được biểu diễn như sau:
+% \begin{equation}
+% y_{i,j} = \sum_{m=0}^{M-1} \sum_{n=0}^{N-1} x_{i+m, j+n} \cdot w_{m,n} + b
+% \end{equation}
+
+% Hàm kích hoạt ReLU thường được sử dụng để tăng tính phi tuyến:
+% \begin{equation}
+% \text{ReLU}(x) = \max(0, x)
+% \end{equation}
+
+% Quá trình huấn luyện CNN dựa trên thuật toán lan truyền ngược (backpropagation) kết hợp các thuật toán tối ưu như SGD hoặc Adam nhằm tối thiểu hóa hàm mất mát.
+\subsection{Mạng nơ-ron tích chập (CNN)}
+
+CNN là kiến trúc mạng neural chuyên xử lý dữ liệu dạng lưới như hình ảnh.
+\subsubsection{Kiến trúc cơ bản}
+
+\textbf{1. Convolutional Layer:}
+\begin{equation}
+Y_{i,j} = \sigma\left(\sum_{m}\sum_{n} W_{m,n} \cdot X_{i+m,j+n} + b\right)
+\end{equation}
+
+trong đó $X$ là ảnh đầu vào, $W$ là kernel (bộ lọc), $b$ là bias, 
+$\sigma(\cdot)$ là hàm kích hoạt (ReLU), và $Y_{i,j}$ là giá trị đặc trưng tại vị trí $(i,j)$.
+
+\textbf{2. Pooling Layer:}
+\begin{equation}
+Y_{i,j} = \max_{m,n \in R} X_{i+m,j+n}
+\end{equation}
+
+trong đó $R$ là vùng pooling (thường kích thước $2 \times 2$), 
+và $Y_{i,j}$ là giá trị sau khi giảm kích thước không gian.
+
+\textbf{3. Fully Connected Layer:}
+\begin{equation}
+y = \sigma(W \cdot x + b)
+\end{equation}
+
+trong đó $x$ là vector đặc trưng đầu vào, $W$ là ma trận trọng số, 
+$b$ là bias và $y$ là đầu ra của lớp kết nối đầy đủ.
+
+\textbf{4. Softmax (Output):}
+\begin{equation}
+P(y=k) = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}
+\end{equation}
+
+trong đó $z_k$ là giá trị logit của lớp $k$, $K$ là tổng số lớp,
+và $P(y=k)$ là xác suất dự đoán mẫu thuộc về lớp $k$.
+
+
+\subsubsection{Ứng dụng trong hệ thống}
+
+\textbf{Nhiệm vụ:} Nhận dạng ký tự trên biển số xe
+
+\textbf{Kiến trúc mô hình:}
+\begin{center}
+\begin{tabular}{l}
+Đầu vào (32×32×1) \\
+$\rightarrow$ Conv2D(32, 3×3) $\rightarrow$ ReLU $\rightarrow$ MaxPool(2×2) \\
+$\rightarrow$ Conv2D(64, 3×3) $\rightarrow$ ReLU $\rightarrow$ MaxPool(2×2) \\
+$\rightarrow$ Flatten $\rightarrow$ Dense(128) $\rightarrow$ Dropout(0.5) \\
+$\rightarrow$ Dense(36) $\rightarrow$ Softmax
+\end{tabular}
+\end{center}
+
+\textbf{Đầu ra:} 36 lớp ký tự (A–Z và 0–9)
+
+\textbf{Quá trình huấn luyện:}
+\begin{itemize}
+    \item Hàm mất mát: Categorical Cross-Entropy
+    \item Thuật toán tối ưu: Adam (learning rate = 0.001)
+    \item Tập dữ liệu: hơn 100.000 ảnh ký tự, có áp dụng tăng cường dữ liệu (data augmentation)
+\end{itemize}
