@@ -1,0 +1,518 @@
+\section{Mô hình hệ thống đề xuất}
+\subsection{Tổng quan kiến trúc hệ thống}
+\FloatBarrier
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[
+    box/.style={rectangle, draw, rounded corners, minimum width=3.2cm, minimum height=1cm, align=center},
+    arrow/.style={->, thick}
+]
+
+% Nodes
+\node[box] (camera) {Camera};
+\node[box, right=2.5cm of camera] (desktop) {Trạm Quét\\(AI Processing)};
+\node[box, right=2.5cm of desktop] (firebase) {Firebase\\(Auth + Firestore + Realtime)};
+\node[box, below=1.8cm of firebase] (cloudinary) {Cloudinary\\(Image Storage)};
+\node[box, below=1.8cm of desktop] (mobile) {Mobile App\\(Student/Guard)};
+\node[box, below=1.8cm of camera] (iot) {Thiết bị IoT\\(Barrier Control)};
+\node[box, below=1.8cm of mobile] (webapp) {Web Dashboard\\(Admin)};
+
+% Arrows
+\draw[arrow] (camera) -- node[above]{Image} (desktop);
+\draw[arrow] (desktop) -- node[above]{Metadata} (firebase);
+\draw[arrow] (firebase) -- node[left]{Control Signal} (iot);
+\draw[arrow] (firebase) -- node[left]{Realtime Sync} (mobile);
+\draw[arrow] (firebase) -- node[below, yshift=-40pt, left=1.5cm]{Realtime Sync} (webapp);
+\draw[arrow] (desktop) -- node[right]{Images} (cloudinary);
+\draw[arrow] (cloudinary) -- node[right]{Image URLs} (firebase);
+
+\end{tikzpicture}
+\caption{Kiến trúc tổng thể hệ thống trạm ra/vào bãi đỗ xe thông minh}
+\label{fig:system_architecture}
+\end{figure}
+\FloatBarrier
+
+Hệ thống trạm ra/vào bãi đỗ xe thông minh được đề xuất nhằm tự động hóa hoàn toàn quá trình kiểm soát phương tiện, giảm thiểu sự can thiệp của con người và nâng cao hiệu quả quản lý. Kiến trúc hệ thống được thiết kế theo hướng phân tầng và mô-đun hóa, cho phép tích hợp ML, ứng dụng di động và hệ thống giám sát trong cùng một mô hình thống nhất.
+
+Về tổng thể, hệ thống bao gồm bảy thành phần chính: trạm quét triển khai tại cổng ra/vào do bảo vệ vận hành, đóng vai trò trung tâm xử lý AI; ứng dụng Mobile phục vụ hai đối tượng người dùng với hai giao diện khác nhau - sinh viên sử dụng để quản lý phương tiện và xem lịch sử ra/vào, bảo vệ sử dụng để giám sát và xử lý các tình huống đặc biệt; Web Dashboard dành cho quản trị viên quản lý toàn bộ hệ thống; nền tảng Firebase cung cấp dịch vụ xác thực (Authentication), lưu trữ dữ liệu lịch sử (Firestore) và bãi đỗ ảo theo thời gian thực (Realtime Database); Cloudinary lưu trữ hình ảnh; camera thu thập hình ảnh phương tiện; và thiết bị IoT điều khiển tự động cổng ra/vào. Các thành phần này giao tiếp với nhau thông qua Internet, đảm bảo khả năng đồng bộ dữ liệu theo thời gian thực.
+
+Luồng hoạt động cơ bản của hệ thống như sau: khi phương tiện tiếp cận trạm vào, camera tự động thu nhận hình ảnh và truyền dữ liệu về trạm quét. Tại đây, mô hình ML thực hiện nhận diện biển số xe. Kết quả nhận diện được đối chiếu với dữ liệu lưu trữ trên Firebase để xác thực quyền vào và kiểm tra số lượt còn lại. Nếu hợp lệ, hệ thống tự động cập nhật trạng thái mở cổng lên Realtime Database, thiết bị IoT nhận tín hiệu và điều khiển cổng mở, đồng thời ghi thông tin xe vào Realtime Database (đóng vai trò bãi đỗ ảo) và Firestore (lưu lịch sử). Ứng dụng Mobile của sinh viên nhận được cập nhật trạng thái xe vào bãi theo thời gian thực, số lượt còn lại cũng được trừ đi tự động. Khi xe ra bãi, nếu sinh viên đã ấn nút "Chuẩn bị rời đi" trên app, xe được phép ra và thông tin xe tự động xóa khỏi Realtime Database. Nếu xe cố gắng ra mà không có yêu cầu rời đi, hệ thống kích hoạt cảnh báo tức thì đến Mobile App của sinh viên, bảo vệ và admin thông qua Realtime Database.
+
+\subsection{Các thành phần chính}
+
+Hệ thống trạm ra/vào bãi đỗ xe thông minh bao gồm các thành phần chính sau:
+
+\textbf{Trạm quét tại cổng ra/vào} được triển khai trực tiếp tại khu vực cổng bãi đỗ xe, do bảo vệ vận hành. Thành phần này đảm nhiệm việc kết nối với camera, xử lý hình ảnh, thực thi mô hình ML để nhận diện biển số phương tiện và điều khiển thiết bị IoT. Ngoài ra, trạm quét có nhiệm vụ đồng bộ dữ liệu với Firebase Cloud, bao gồm: ghi thông tin xe vào Realtime Database khi xe vào bãi, xóa thông tin khỏi Realtime Database khi xe ra, và lưu lịch sử đầy đủ vào Firestore. Bảo vệ sử dụng trạm quét để xử lý các tình huống đặc biệt như xe khách lần đầu vào bãi hoặc các trường hợp bất thường.
+
+\textbf{Mô-đun ML} là thành phần cốt lõi của hệ thống, chịu trách nhiệm xử lý hình ảnh và thực hiện các tác vụ nhận diện phương tiện tại trạm ra/vào bãi đỗ. Tùy theo loại cổng và loại phương tiện, mô-đun này triển khai các nhánh xử lý khác nhau, bao gồm: nhận diện biển số xe, nhận diện mặt trước phương tiện kết hợp logo hãng xe (đối với cổng ô tô), và nhận diện khuôn mặt người điều khiển (đối với cổng xe máy).
+
+Đối với trường hợp \textit{nhận diện biển số}, mô-đun ML thực hiện chuỗi các bước xử lý theo hướng học sâu. Trước hết, ảnh đầu vào được tiền xử lý nhằm chuẩn hóa kích thước, cải thiện chất lượng ảnh và giảm nhiễu, qua đó tăng độ ổn định cho các bước xử lý tiếp theo. Sau đó, hệ thống tiến hành phát hiện vùng chứa biển số thông qua mô hình phát hiện đối tượng.
+
+Sau khi vùng biển số được xác định, ảnh biển số được cắt (crop) và tiếp tục được phân tách thành các vùng ký tự riêng lẻ. Mỗi ký tự sau khi tách được đưa vào một mô hình mạng CNN do nhóm nghiên cứu tự xây dựng và huấn luyện. Mô hình CNN này học trực tiếp các đặc trưng hình ảnh của ký tự (hình dạng, nét, độ cong, độ tương phản) để thực hiện phân loại ký tự.
+
+Kết quả nhận dạng của từng ký tự được tổng hợp theo đúng thứ tự xuất hiện trên biển số, từ đó tạo thành chuỗi ký tự đại diện cho biển số phương tiện. Chuỗi kết quả này được sử dụng để truy vấn và xác thực thông tin phương tiện trong hệ thống cơ sở dữ liệu Firebase, phục vụ cho các quyết định điều khiển cổng và ghi nhận thông tin vào Realtime Database cũng như Firestore.
+
+Đối với trường hợp \textit{nhận diện xe và logo} tại cổng ô tô, mô-đun ML sử dụng mô hình phát hiện đối tượng để xác định vùng mặt trước phương tiện và vị trí logo hãng xe. Các vùng ảnh này sau đó được đưa vào mô hình mạng nơ-ron Siamese đã được huấn luyện để trích xuất và so khớp đặc trưng hình ảnh của phương tiện. 
+
+Đối với trường hợp \textit{nhận diện khuôn mặt} tại cổng xe máy, mô-đun ML tiến hành phát hiện khuôn mặt người điều khiển phương tiện, sau đó trích xuất đặc trưng khuôn mặt để so sánh với dữ liệu đã được đăng ký trước đó trong hệ thống. Kết quả so khớp được sử dụng như một yếu tố xác thực bổ sung, hỗ trợ kiểm soát truy cập và giảm thiểu nguy cơ sử dụng phương tiện trái phép.
+
+Kết quả đầu ra của mô-đun ML bao gồm các thông tin nhận diện như biển số xe, loại phương tiện, hãng xe (thông qua logo), hoặc mã định danh khuôn mặt. Các dữ liệu này được gửi tới hệ thống backend để thực hiện truy vấn và xác thực trên Firebase, từ đó phục vụ cho các quyết định điều khiển cổng, ghi nhận thông tin vào Realtime Database và Firestore, cũng như kích hoạt các cơ chế cảnh báo khi phát hiện bất thường.
+
+\textbf{Ứng dụng Mobile} phục vụ hai đối tượng người dùng với hai giao diện khác nhau:
+
+\textit{Giao diện dành cho sinh viên} cung cấp các chức năng: đăng ký phương tiện, mua lượt ra/vào thông qua quét mã QR và thanh toán, xem số lượt còn lại, theo dõi lịch sử ra/vào bãi đỗ xe từ Firestore. Quan trọng hơn, ứng dụng tự động cập nhật trạng thái xe đang đỗ trong bãi theo thời gian thực thông qua Firebase Realtime Database Listeners. Khi xe vào bãi, sinh viên nhận ngay thông báo và thông tin xe được hiển thị trong danh sách "Xe đang đỗ", số lượt còn lại cũng được cập nhật sau mỗi lần sử dụng. Khi sinh viên muốn rời bãi, cần ấn nút "Chuẩn bị rời đi" trên app để đánh dấu yêu cầu ra trong Realtime Database, giúp hệ thống phân biệt giữa xe ra hợp lệ và xe ra bất thường.
+
+\textit{Giao diện dành cho bảo vệ} cung cấp các chức năng giám sát: theo dõi danh sách xe đang đỗ trong bãi từ Realtime Database, xem lịch sử xe ra vào, tạo và quét mã QR để mở cổng trong trường hợp đặc biệt, gửi yêu cầu mở cổng cho quản trị viên, nhận thông báo về các trường hợp bất thường. Giao diện bảo vệ được thiết kế tối ưu cho việc giám sát nhanh và xử lý tình huống.
+
+\textbf{Web Dashboard} dành riêng cho quản trị viên (admin), cho phép quản lý toàn bộ hệ thống: quản lý người dùng, phương tiện, lượt ra/vào; xem danh sách xe đang đỗ từ Realtime Database; quản lý và thống kê lượt xe ra vào; xem báo cáo chi tiết từ Firestore; nhận và xử lý yêu cầu mở cổng từ bảo vệ; cấu hình thông số hệ thống. Dashboard cập nhật thông tin theo thời gian thực từ Firebase, cung cấp cái nhìn tổng quan về hoạt động của bãi đỗ xe.
+
+\textbf{Nền tảng đám mây Firebase} được sử dụng với ba dịch vụ chính:
+
+\textit{Firebase Authentication} quản lý xác thực người dùng với các phương thức đăng nhập Email/Password và Google Sign-In.
+
+\textit{Firebase Realtime Database} đóng vai trò như "bãi đỗ ảo" theo thời gian thực, lưu trữ thông tin các xe đang đỗ trong bãi tại thời điểm hiện tại. Khi xe vào, thông tin xe được ghi vào Realtime Database. Khi xe ra (hợp lệ), thông tin xe tự động xóa khỏi Realtime Database. Ngoài ra, Realtime Database còn lưu trữ trạng thái cổng (mở/đóng) để điều khiển thiết bị IoT và các cảnh báo an toàn cần xử lý tức thì. Cơ chế này cho phép tất cả client (Mobile App, Web Dashboard, thiết bị IoT) quan sát trạng thái bãi đỗ theo thời gian thực và phát hiện các trường hợp bất thường ngay lập tức.
+
+\textit{Cloud Firestore} đảm nhiệm việc lưu trữ dữ liệu lịch sử lâu dài, bao gồm: thông tin người dùng, phương tiện đã đăng ký, lượt ra/vào đã mua, lịch sử giao dịch, và đặc biệt là lịch sử hoạt động đầy đủ của mọi lần xe ra/vào (entry history). Mỗi lần xe vào và ra bãi, một bản ghi lịch sử được tạo trong Firestore với đầy đủ thông tin: thời gian vào, thời gian ra, hình ảnh, biển số, để phục vụ cho việc tra cứu, thống kê và truy vết.
+
+\textbf{Thiết bị IoT} được triển khai tại mỗi cổng ra/vào, lắng nghe thay đổi trên Firebase Realtime Database. Khi nhận được tín hiệu mở cổng từ Realtime Database, thiết bị IoT tự động điều khiển cơ cấu chấp hành (servo motor) để mở thanh chắn, cho phép xe đi vào hoặc ra khỏi bãi. Sau khi xe đi qua, thiết bị IoT tự động đóng cổng và cập nhật lại trạng thái ban đầu lên Realtime Database.
+
+\textbf{Hệ thống lưu trữ hình ảnh Cloudinary} được sử dụng để lưu trữ các hình ảnh phương tiện thu thập trong quá trình ra/vào bãi, phục vụ cho việc đối chiếu và truy vết khi cần thiết. Firebase chỉ lưu trữ URL của hình ảnh, trong khi dữ liệu hình ảnh thực tế được quản lý bởi Cloudinary.
+
+\subsection{Quy trình xe người dùng vào bãi}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    startstop/.style={circle, draw, minimum size=0.8cm, align=center},
+    block/.style={rectangle, draw, rounded corners, minimum width=4cm, minimum height=1cm, align=center},
+    decision/.style={diamond, draw, aspect=2, align=center, inner sep=1pt},
+    arrow/.style={->, thick},
+    node distance=1.5cm
+]
+
+% Nodes
+\node[startstop] (start) {Bắt đầu};
+\node[block, below=0.5cm of start] (arrive) {Xe đến trạm vào};
+\node[block, below of=arrive] (capture) {Camera tự động chụp ảnh \\ phương tiện};
+\node[block, below of=capture] (ai) {Mô hình AI nhận diện \\ biển số tự động};
+\node[block, below of=ai] (check) {Đối chiếu biển số };
+
+\node[decision, below=0.5cm of check] (valid) {Hợp lệ?};
+
+\node[block, below=1.5cm of valid] (update) {Ghi vào Realtime DB \\ và lưu lịch sử Firestore};
+
+\node[block, below=0.5cm of update] (upload) {Upload ảnh xe vào \\ lên Cloudinary};
+
+\node[block, below=0.5cm of upload] (iot) {Thiết bị IoT nhận tín hiệu \\ và điều khiển mở cổng};
+
+\node[block, below=0.5cm of iot] (notify) {Mobile App sinh viên cập nhâp trạng};
+
+\node[block, below=0.5cm of notify] (guard) {Mobile App bảo vệ và \\ Web Dashboard quan sát};
+
+\node[startstop, right=1.5cm of guard] (end) {Kết thúc};
+
+\node[block, right=4.8cm of valid] (deny) {Từ chối truy cập \\ Không mở cổng};
+
+\node[block, below=0.5cm of deny] (logdeny) {Ghi nhận sự kiện \\ không hợp lệ vào log};
+
+
+% Arrows
+\draw[arrow] (start) -- (arrive);
+\draw[arrow] (arrive) -- (capture);
+\draw[arrow] (capture) -- (ai);
+\draw[arrow] (ai) -- (check);
+\draw[arrow] (check) -- (valid);
+
+\draw[arrow] (valid) -- node[left]{Có} (update);
+\draw[arrow] (update) -- (upload);
+\draw[arrow] (upload) -- (iot);
+\draw[arrow] (iot) -- (notify);
+\draw[arrow] (notify) -- (guard);
+\draw[arrow] (guard) -- (end);
+
+\draw[arrow] (valid.east) -- node[above]{Không} (deny.west);
+\draw[arrow] (deny) -- (logdeny);
+\draw[arrow] (logdeny) -- (end);
+
+\end{tikzpicture}
+\FloatBarrier
+\caption{Quy trình xe người dùng vào bãi đỗ xe thông minh}
+\label{fig:vehicle_entry_process}
+\end{figure}
+
+\textbf{Mô tả quy trình:}
+
+Để một phương tiện có thể vào bãi đỗ, người dùng trước tiên cần cài đặt ứng dụng di động và đăng ký tài khoản. Trong ứng dụng, người dùng phải khai báo đầy đủ thông tin cá nhân và thông tin phương tiện (bao gồm biển số, loại xe). Khi đã đăng nhập thành công vào hệ thống, người dùng mới có thể sử dụng bãi đỗ thông minh.
+
+Quy trình xe người dùng vào bãi được thiết kế hoàn toàn tự động, không yêu cầu sự can thiệp của sinh viên. Khi phương tiện tiếp cận trạm vào, camera tự động kích hoạt và chụp ảnh phương tiện. Hình ảnh được truyền ngay lập tức đến trạm quét, nơi mô hình AI thực hiện nhận diện biển số một cách tự động.
+
+Sau khi có kết quả nhận diện, hệ thống tự động truy vấn Firebase Firestore để đối chiếu biển số với danh sách phương tiện đã đăng ký và kiểm tra số lượt ra/vào còn lại của sinh viên. Trạm quét thực hiện các bước sau theo trình tự:
+
+Nếu biển số hợp lệ và sinh viên còn lượt, hệ thống thực hiện ba thao tác: (1) Ghi thông tin xe vào Realtime Database với các thông tin: biển số, userId,.. để tạo ra "bãi đỗ ảo" phản ánh chính xác trạng thái hiện tại; (2) Tạo bản ghi lịch sử mới trong Firestore. Sau đó, hệ thống upload hình ảnh xe vào lên Cloudinary và lưu URL vào Firestore. Đồng thời, hệ thống cập nhật cờ mở cổng lên Realtime Database.
+
+Thiết bị IoT đang lắng nghe thay đổi trên Realtime Database bắt được tín hiệu mở cổng và tự động điều khiển servo motor mở thanh chắn, cho phép xe vào bãi. Khi thông tin được ghi vào Realtime Database, nhờ cơ chế Realtime Listeners, ứng dụng Mobile của sinh viên ngay lập tức nhận được notification và hiển thị xe trong danh sách "Xe đang đỗ" kèm thông tin thời gian vào và hình ảnh. Đồng thời, ứng dụng Mobile của bảo vệ và Web Dashboard của admin cũng tự động cập nhật danh sách xe đang đỗ từ Realtime Database. Sau khi xe đi qua, thiết bị IoT tự động đóng cổng và cập nhật trạng thái cổng về giá trị ban đầu trên Realtime Database. Trong trường hợp biển số không hợp lệ, hệ thống từ chối mở cổng.
+\FloatBarrier
+
+\subsection{Quy trình xe người dùng ra bãi}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    startstop/.style={circle, draw, minimum size=0.8cm, align=center},
+    block/.style={rectangle, draw, rounded corners, minimum width=4.2cm, minimum height=1cm, align=center},
+    decision/.style={diamond, draw, aspect=2, align=center, inner sep=1pt},
+    arrow/.style={->, thick},
+    node distance=1.5cm
+]
+
+% Nodes
+\node[startstop] (start) {Bắt đầu};
+\node[block, below=0.5cm of start] (prepare) {Sinh viên ấn nút \\ "Chuẩn bị rời đi" trên app};
+\node[block, below of=prepare] (arrive) {Xe đến trạm ra};
+\node[block, below of=arrive] (capture) {Camera tự động chụp ảnh};
+\node[block, below of=capture] (ai) {Mô hình AI nhận diện \\ biển số tự động};
+
+\node[block, below of=ai] (verify) {Kiểm tra xe trong \\ Realtime DB};
+
+\node[decision, below=0.5cm of verify] (exist) {Xe có trong \\ bãi đỗ ảo?};
+
+\node[decision, below=0.5cm of exist] (ready) {Có yêu cầu \\ "rời đi" và còn lượt?};
+
+\node[block, below=0.5cm of ready] (update) {Xóa xe khỏi Realtime DB, \\ cập nhật vào Firestore và trừ lượt};
+
+\node[block, below=0.5cm of update] (upload) {Upload ảnh xe ra \\ lên Cloudinary};
+
+\node[block, below=0.5cm of upload] (iot) {Thiết bị IoT nhận tín hiệu \\ và điều khiển mở cổng};
+
+\node[block, right=7cm of exist] (alert1) {Cảnh báo: \\ Xe không có trong bãi};
+
+\node[block, right=2cm of ready] (alert2) {Cảnh báo tức thì \\ đến Mobile App sinh viên};
+
+\node[block, below=0.5cm of alert2] (guardnotif) {Thông báo đến \\ bảo vệ và admin};
+
+\node[startstop, below right=2cm and 2cm of guardnotif] (end) {Kết thúc};
+
+% Arrows
+\draw[arrow] (start) -- (prepare);
+\draw[arrow] (prepare) -- (arrive);
+\draw[arrow] (arrive) -- (capture);
+\draw[arrow] (capture) -- (ai);
+\draw[arrow] (ai) -- (verify);
+\draw[arrow] (verify) -- (exist);
+
+\draw[arrow] (exist) -- node[left]{Có} (ready);
+\draw[arrow] (ready) -- node[left]{Có} (update);
+\draw[arrow] (update) -- (upload);
+\draw[arrow] (upload) -- (iot);
+\draw[arrow] (iot) -- (end);
+
+\draw[arrow] (exist.east) -- node[above]{Không} (alert1.west);
+\draw[arrow] (alert1) -- (end);
+
+\draw[arrow] (ready.east) -- node[above]{Không} (alert2.west);
+\draw[arrow] (alert2) -- (guardnotif);
+\draw[arrow] (guardnotif) -- (end);
+
+\end{tikzpicture}
+\caption{Quy trình xe người dùng ra bãi đỗ xe thông minh}
+\label{fig:vehicle_exit_process}
+\end{figure}
+\FloatBarrier
+
+\textbf{Mô tả quy trình:}
+
+Khi người dùng muốn rời bãi, hệ thống kiểm tra yêu cầu rời đi, xác thực bằng ảnh biển số so sánh với lần vào, cập nhật dữ liệu lên Realtime Database để thiết bị IoT điều khiển mở cổng, ghi lại lịch sử và sau cùng tự đóng cổng.
+
+Quy trình xe ra bãi được thiết kế để phân biệt rõ ràng giữa xe ra hợp lệ và xe ra bất thường thông qua Realtime Database. Trước tiên, người dùng trên ứng dụng thực hiện thao tác chuyển trạng thái phương tiện sang "yêu cầu rời" bằng cách ấn nút "Chuẩn bị rời đi".
+
+Sau đó, người dùng điều khiển phương tiện di chuyển đến trạm ra. Khi phương tiện tiếp cận, camera tự động kích hoạt và chụp ảnh xe. Trạm quét nhận hình ảnh và sử dụng mô hình AI để nhận diện biển số một cách tự động.
+
+Sau khi có kết quả nhận diện, hệ thống tự động truy vấn Realtime Database để kiểm tra xem xe có tồn tại trong "bãi đỗ ảo" không. Nếu không tìm thấy xe trong Realtime Database, hệ thống kích hoạt cảnh báo.
+
+Nếu xe có trong Realtime Database, hệ thống thực hiện chuỗi các bước tự động: (1) Xóa thông tin xe khỏi Realtime Database; (2) Cập nhật bản ghi lịch sử và giảm lượt tương ứng trong Firestore; (3) Upload hình ảnh xe ra lên Cloudinary và lưu URL vào Firestore; (4) Cập nhật cờ mở cổng lên Realtime Database. Thiết bị IoT lắng nghe Realtime Database bắt được tín hiệu và tự động điều khiển servo motor mở thanh chắn. Toàn bộ quy trình diễn ra êm thấm, không có thông báo cảnh báo nào.
+
+Nếu sinh viên chưa ấn nút "Chuẩn bị rời đi" nhưng xe đã xuất hiện ở cổng ra, hệ thống ngay lập tức kích hoạt cảnh báo an toàn: Trạm quét tạo một event cảnh báo trong Realtime Database. Nhờ cơ chế Realtime Listeners, ứng dụng Mobile của sinh viên chủ xe ngay lập tức nhận được notification với nội dung cảnh báo. Đồng thời, hệ thống gửi notification đến ứng dụng Mobile của tất cả bảo vệ và Web Dashboard của admin. Cổng không mở trong trường hợp này cho đến khi sinh viên xác nhận hoặc bảo vệ can thiệp.
+
+Cơ chế này đảm bảo an toàn tối đa: mọi xe ra đều phải có sự xác nhận từ sinh viên qua app trước, nếu không sẽ kích hoạt cảnh báo tức thì.
+\FloatBarrier
+
+\subsection{Quy trình xe khách hoặc cán bộ vào bãi}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    startstop/.style={circle, draw, minimum size=0.8cm, align=center},
+    block/.style={rectangle, draw, rounded corners, minimum width=4.5cm, minimum height=1cm, align=center},
+    decision/.style={diamond, draw, aspect=2, align=center, inner sep=1pt},
+    arrow/.style={->, thick},
+    node distance=1.5cm
+]
+
+% Nodes
+\node[startstop] (start) {Bắt đầu};
+\node[block, below=1cm of start] (arrive) {Phương tiện tiếp cận \\ trạm vào};
+\node[block, below=1cm of arrive] (capture) {Camera tự động chụp ảnh \\ và AI nhận diện biển số};
+\node[block, below=1cm of capture] (send) {Trạm quét truy vấn \\ biển số trên Firestore};
+
+\node[decision, below=1.8cm of send] (exist) {Biển số \\ đã tồn tại?};
+
+\node[decision, right=2.5cm of exist] (confirm) {Bảo vệ xác nhận \\ qua trạm quét?};
+
+\node[block, below=1.8cm of exist] (sync) {Ghi vào Realtime DB \\ và lưu lịch sử Firestore};
+
+\node[block, below=1.8cm of confirm] (create) {Tạo bản ghi xe khách \\ và lưu ảnh Cloudinary};
+
+\node[block, below=1cm of sync] (iot) {Thiết bị IoT nhận tín hiệu \\ và điều khiển mở cổng};
+
+\node[block, below=0.5cm of iot] (notify) {Mobile App bảo vệ và \\ Web Dashboard quan sát};
+
+\node[block, right=1.5cm of confirm] (deny) {Từ chối \\ không mở cổng};
+
+\node[startstop, below=5.5cm of deny] (end) {Kết thúc};
+
+% Arrows
+\draw[arrow] (start) -- (arrive);
+\draw[arrow] (arrive) -- (capture);
+\draw[arrow] (capture) -- (send);
+\draw[arrow] (send) -- (exist);
+
+\draw[arrow] (exist) -- node[left]{Có} (sync);
+\draw[arrow] (sync) -- (iot);
+\draw[arrow] (iot) -- (notify);
+\draw[arrow] (notify) -- (end);
+
+\draw[arrow] (exist.east) -- node[above]{Không} (confirm.west);
+\draw[arrow] (confirm) -- node[left]{Có} (create);
+\draw[arrow] (create) -- (iot);
+
+\draw[arrow] (confirm.east) -- node[above]{Không} (deny.west);
+\draw[arrow] (deny) -- (end);
+
+\end{tikzpicture}
+
+\caption{Quy trình xe khách hoặc cán bộ vào bãi đỗ xe không dùng app}
+\label{fig:guest_vehicle_process}
+\end{figure}
+\FloatBarrier
+
+\textbf{Mô tả quy trình:}
+
+Đối với trường hợp cán bộ hoặc khách thỉnh thoảng đến (không cần cài app), khi phương tiện tiến vào trạm quét, hệ thống sẽ tự động nhận diện biển số, kiểm tra trong Firestore xem biển số đã có record thuộc loại "khách (ưu tiên)" hay chưa. Nếu chưa có, hệ thống yêu cầu bảo vệ xác nhận, sau đó tạo bản ghi tạm cho xe khách, lưu ảnh và đồng bộ dữ liệu lên Realtime Database để thiết bị IoT mở cổng, đồng thời ghi sự kiện vào lịch sử hoạt động.
+
+Quy trình chi tiết như sau: Phương tiện tiến đến trạm quét, camera chụp ảnh biển số và gửi dữ liệu nhận diện lên hệ thống. Trạm quét truy vấn Firestore để xác định xem biển số vừa quét có tồn tại và có được phân loại là "khách (ưu tiên)" hay không.
+
+Nếu đã tồn tại và đúng loại "khách (ưu tiên)", hệ thống tự động ghi thông tin xe vào Realtime Database để thêm xe vào "bãi đỗ ảo", đồng thời tạo bản ghi lịch sử trong Firestore. Hệ thống cập nhật cờ mở cổng lên Realtime Database, thiết bị IoT nhận tín hiệu và tự động điều khiển mở cổng. Toàn bộ quy trình diễn ra tự động không cần can thiệp.
+
+Nếu chưa tồn tại, hệ thống hiển thị yêu cầu trên màn hình trạm quét: "Xe lạ phát hiện. Bảo vệ có muốn thêm xe này vào danh sách xe khách?". Bảo vệ xem thông tin xe (biển số, hình ảnh) trực tiếp trên màn hình và quyết định có cho phép xe vào hay không. Nếu bảo vệ xác nhận "Có", hệ thống tự động tạo bản ghi xe khách mới trong Firestore với khách có ưu tiên hay không, upload ảnh lên Cloudinary, ghi thông tin xe vào Realtime Database, sau đó cập nhật cờ mở cổng. Thiết bị IoT nhận tín hiệu và mở cổng. Trạng thái bãi đỗ được cập nhật real-time đến ứng dụng Mobile của các bảo vệ khác cũng như Web Dashboard của admin.
+
+Nếu bảo vệ từ chối, hệ thống không mở cổng và ghi nhận sự kiện từ chối vào log trong Firestore. Toàn bộ quy trình này đảm bảo tính linh hoạt cho các trường hợp đặc biệt trong khi vẫn duy trì tự động hóa tối đa.
+\FloatBarrier
+
+\subsection{Quy trình xe khách rời khỏi bãi đỗ}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    startstop/.style={circle, draw, minimum size=0.8cm, align=center},
+    block/.style={rectangle, draw, rounded corners, minimum width=4.8cm, minimum height=1cm, align=center},
+    decision/.style={diamond, draw, aspect=2.2, align=center, inner sep=1pt},
+    arrow/.style={->, thick},
+    node distance=1.6cm
+]
+
+% Nodes
+\node[startstop] (start) {Bắt đầu};
+\node[block, below=1cm of start] (arrive) {Phương tiện di chuyển \\ đến trạm ra};
+\node[block, below=1cm of arrive] (scan) {Camera tự động chụp ảnh \\ và AI nhận diện biển số};
+\node[block, below=1cm of scan] (query) {Trạm quét truy vấn \\ xe trong Realtime DB};
+
+\node[decision, below=1.8cm of query] (match) {Xe có trong \\ bãi đỗ ảo?};
+
+\node[block, below=1.8cm of match] (update) {Xóa xe khỏi Realtime DB, \\ cập nhật Firestore};
+
+\node[block, below=0.5cm of update] (upload) {Upload ảnh xe ra \\ lên Cloudinary};
+
+\node[block, below=0.5cm of upload] (iot) {Thiết bị IoT nhận tín hiệu \\ và điều khiển mở cổng};
+
+\node[block, right=6.2cm of match] (deny) {Từ chối ra bãi \\ và thông báo bảo vệ};
+
+\node[startstop, below=5.5cm of deny] (end) {Kết thúc};
+
+% Arrows
+\draw[arrow] (start) -- (arrive);
+\draw[arrow] (arrive) -- (scan);
+\draw[arrow] (scan) -- (query);
+\draw[arrow] (query) -- (match);
+
+\draw[arrow] (match) -- node[left]{Có} (update);
+\draw[arrow] (update) -- (upload);
+\draw[arrow] (upload) -- (iot);
+\draw[arrow] (iot) -- (end);
+
+\draw[arrow] (match.east) -- node[above]{Không} (deny.west);
+\draw[arrow] (deny) -- (end);
+
+\end{tikzpicture}
+\caption{Quy trình xe khách rời khỏi bãi đỗ xe thông minh}
+\label{fig:guest_exit_process}
+\end{figure}
+
+\textbf{Mô tả quy trình:}
+
+Khi khách có nhu cầu lấy xe ra khỏi bãi đỗ, hệ thống sẽ tiến hành theo các bước chính. Quy trình xe khách ra bãi được thiết kế đơn giản hơn so với xe sinh viên vì xe khách không có Mobile App để đánh dấu "Chuẩn bị rời đi". 
+
+Phương tiện di chuyển đến trạm kiểm soát, camera tiến hành quét và gửi dữ liệu biển số cùng hình ảnh lên hệ thống. Trạm quét sử dụng AI để nhận diện biển số, sau đó truy vấn Realtime Database để kiểm tra xe có trong "bãi đỗ ảo" không.
+
+Hệ thống lấy dữ liệu biển số vừa quét, so sánh với bản ghi đã lưu trong Realtime Database. Đồng thời, đối chiếu hình ảnh hiện tại với hình ảnh lúc vào (được lưu trong Firestore lịch sử hoạt động) để xác thực. Nếu tìm thấy xe (xe thực sự đang đỗ trong bãi), hệ thống thực hiện chuỗi các bước tự động:
+
+Nếu kết quả đối chiếu trùng khớp, hệ thống cập nhật dữ liệu: (1) Xóa thông tin xe khỏi Realtime Database (vì xe đã rời bãi); (2) Cập nhật bản ghi lịch sử tương ứng trong Firestore; (3) Upload hình ảnh xe ra lên Cloudinary và lưu URL vào Firestore. Tùy thuộc vào loại phương tiện (xe máy hoặc ô tô), dữ liệu sẽ được phân loại và lưu.
+
+Ngay sau đó, hệ thống cập nhật cờ mở cổng lên Realtime Database. Thiết bị IoT lắng nghe thay đổi trên Realtime Database, khi nhận được lệnh mở cổng, tự động điều khiển servo motor để nâng thanh chắn, cho phép xe rời khỏi bãi. Trạng thái bãi đỗ được đồng bộ real-time lên tất cả client. Sau khi xe đã ra ngoài, thiết bị IoT điều khiển hạ thanh chắn, đồng thời hệ thống cập nhật trạng thái cổng về giá trị ban đầu, hoàn tất chu trình.
+
+Trong trường hợp biển số không khớp hoặc không tìm thấy xe trong Realtime Database, hệ thống từ chối mở cổng và ngay lập tức gửi notification đến trạm quét hiện tại, ứng dụng Mobile của các bảo vệ khác và Web Dashboard của admin để can thiệp.
+\FloatBarrier
+
+\subsection{Quy trình cảnh báo an toàn phương tiện}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    startstop/.style={circle, draw, minimum size=0.8cm, align=center},
+    block/.style={rectangle, draw, rounded corners, minimum width=4.8cm, minimum height=1cm, align=center},
+    decision/.style={diamond, draw, aspect=2.2, align=center, inner sep=1pt},
+    arrow/.style={->, thick},
+    node distance=1.6cm
+]
+
+% Common steps
+\node[startstop] (start) {Bắt đầu};
+\node[block, below=0.5cm of start] (arrive) {Phương tiện đến \\ trạm ra};
+\node[block, below of=arrive] (scan) {Camera tự động chụp ảnh \\ và AI nhận diện biển số};
+\node[block, below of=scan] (check) {Trạm quét kiểm tra \\ xe trong Realtime DB};
+
+\node[decision, below=1.9cm of check] (status) {Xe có trong \\ bãi đỗ ảo?};
+
+% Case 1: Có xe - kiểm tra readyToExit
+\node[decision, below=1.9cm of status] (ready) {Có đánh dấu \\ "rời đi"?};
+
+\node[block, below=1.9cm of ready] (normal) {Cho xe ra \\ bình thường};
+
+\node[startstop, below=0.5cm of normal] (end1) {Kết thúc};
+
+% Case 2: Không có xe hoặc không có yêu cầu - cảnh báo
+\node[block, right=6.5cm of status] (alert1) {Cảnh báo: \\ Xe không có trong bãi};
+
+\node[startstop, below=0.5cm of alert1] (end2) {Kết thúc};
+
+\node[block, right=6.5cm of ready] (alert2) {Cảnh báo tức thì qua \\ Realtime DB đến Mobile App};
+
+\node[block, below of=alert2] (notifyadmin) {Thông báo đến trạm quét, \\ Mobile App bảo vệ và Web Dashboard};
+
+\node[decision, below=1cm of notifyadmin] (confirm) {Sinh viên xác nhận \\ không hợp lệ?};
+
+\node[block, below=0.5cm of confirm] (deny) {Từ chối mở cổng \\ và yêu cầu bảo vệ can thiệp};
+
+\node[startstop, below=0.5cm of deny] (end3) {Kết thúc};
+
+\node[block, left=1.5cm of confirm] (allow) {Sinh viên xác nhận \\ Cho phép ra};
+
+\node[startstop, below=0.5cm of allow] (end4) {Kết thúc};
+
+% Arrows
+\draw[arrow] (start) -- (arrive);
+\draw[arrow] (arrive) -- (scan);
+\draw[arrow] (scan) -- (check);
+\draw[arrow] (check) -- (status);
+
+\draw[arrow] (status) -- node[left]{Có} (ready);
+\draw[arrow] (ready) -- node[left]{Có} (normal);
+\draw[arrow] (normal) -- (end1);
+
+\draw[arrow] (status.east) -- node[above]{Không} (alert1.west);
+\draw[arrow] (alert1) -- (end2);
+
+\draw[arrow] (ready.east) -- node[above]{Không} (alert2.west);
+\draw[arrow] (alert2) -- (notifyadmin);
+\draw[arrow] (notifyadmin) -- (confirm);
+\draw[arrow] (confirm) -- node[right]{Có} (deny);
+\draw[arrow] (deny) -- (end3);
+\draw[arrow] (confirm.west) -- node[above]{Không} (allow.east);
+\draw[arrow] (allow) -- (end4);
+
+\end{tikzpicture}
+\caption{Quy trình cảnh báo an toàn phương tiện trong hệ thống bãi đỗ xe thông minh}
+\label{fig:alert_process}
+\end{figure}
+
+\textbf{Mô tả quy trình:}
+
+Trong quá trình vận hành hệ thống, chức năng cảnh báo được thiết kế nhằm đảm bảo an toàn cho phương tiện thông qua cơ chế "bãi đỗ ảo" trong Realtime Database.
+
+Khi phương tiện đến trạm ra, camera tự động chụp ảnh và AI nhận diện biển số. Trạm quét truy vấn Realtime Database để kiểm tra xem xe có tồn tại trong "bãi đỗ ảo" không.
+
+\textbf{Trường hợp 1 - Người dùng quên gửi yêu cầu rời bãi:}
+
+Xe được đưa đến trạm kiểm soát và tiến hành quét biển số. Hệ thống đối chiếu dữ liệu và kiểm tra trạng thái yêu cầu rời bãi. Nếu tìm thấy xe trong Realtime Database, do chưa có yêu cầu rời, hệ thống sẽ ghi nhận sự bất thường và cập nhật cảnh báo vào Realtime Database.
+
+Nhờ cơ chế Realtime Listeners, người dùng nhận được thông báo cảnh báo ngay trong ứng dụng di động Đồng thời, thông báo được gửi đến trạm quét, ứng dụng Mobile của bảo vệ và Web Dashboard của admin.
+
+Khi người dùng xác minh và bổ sung yêu cầu rời bãi bằng cách ấn nút "Chuẩn bị rời đi" trên app, hệ thống cập nhật trong Realtime Database. Trạm quét nhận được event update này qua Realtime Listener, sau đó sẽ tiến hành kiểm tra lại. Nếu thông tin hợp lệ, quy trình lấy xe ra khỏi bãi sẽ được kích hoạt và thực hiện như thông thường.
+
+\textbf{Trường hợp 2 - Xe bị kẻ gian đưa đi trái phép:}
+
+Kẻ gian đưa xe đến trạm, camera tiến hành quét biển số. Hệ thống kiểm tra và phát hiện xe có trong Realtime Database nhưng không có yêu cầu rời bãi. Ngay lập tức, trạm quét tạo event cảnh báo trong Realtime Database.
+
+Người dùng chính chủ nhận được thông báo cảnh báo khẩn cấp trên ứng dụng. Đồng thời, thông báo được gửi đến trạm quét, ứng dụng Mobile của bảo vệ và Web Dashboard.
+
+Người dùng xác minh "không phải tôi" qua app, hệ thống cập nhật. Hệ thống tiến hành kiểm tra lại và kết luận truy cập không hợp lệ. Cổng sẽ không được mở, đồng thời hệ thống gửi cảnh báo khẩn cấp đến bộ phận bảo vệ để xử lý và ngăn chặn kịp thời.
+
+Trong mọi trường hợp bất thường, trạm quét, ứng dụng Mobile của sinh viên và bảo vệ, và Web Dashboard của admin đều được cập nhật real-time thông qua Realtime Database, đảm bảo phát hiện và xử lý tức thì, bảo vệ an toàn tối đa cho phương tiện và tài sản của người dùng.
+
+\subsection{Mô hình dữ liệu}
+
+Mô hình dữ liệu của hệ thống được thiết kế với hai tầng lưu trữ riêng biệt: Realtime Database cho dữ liệu trạng thái thời gian thực và Firestore cho dữ liệu lịch sử lâu dài, nhằm đảm bảo khả năng quản lý thông tin phương tiện, lượt ra/vào và lịch sử sử dụng một cách nhất quán, hiệu quả và dễ mở rộng.
+
+\textbf{Firebase Realtime Database} đóng vai trò "bãi đỗ ảo", lưu trữ trạng thái hiện tại của bãi đỗ xe theo thời gian thực. Cơ sở dữ liệu này được cấu trúc theo dạng cây JSON với các node chính, cho phép đồng bộ dữ liệu tức thì đến tất cả các client đang kết nối. 
+
+Thông tin các xe đang đỗ được lưu trữ với đầy đủ các thuộc tính: biển số, loại xe (ô tô/xe máy), thời gian vào bãi, URL hình ảnh đã lưu trên Cloudinary, và trạng thái yêu cầu rời đi của người dùng. Cơ chế này cho phép hệ thống xác định chính xác phương tiện nào đang có mặt trong bãi đỗ tại từng thời điểm.
+
+Các cảnh báo an toàn được lưu trữ tạm thời trong Realtime Database với các thông tin: loại cảnh báo (xe không trong bãi, chưa có yêu cầu rời đi, nghi ngờ trộm cắp), thời điểm phát hiện, biển số phương tiện, hình ảnh liên quan, và trạng thái xử lý. Cảnh báo được tự động xóa sau khi được xử lý hoàn tất.
+
+Trạng thái cổng ra/vào cũng được quản lý trong Realtime Database, bao gồm cờ điều khiển mở/đóng cổng để thiết bị IoT lắng nghe và thực thi lệnh tự động.
+
+\textbf{Cloud Firestore} đảm nhiệm việc lưu trữ dữ liệu lịch sử lâu dài và cấu hình hệ thống. Firestore được tổ chức theo dạng collection-document, cho phép thực hiện các truy vấn phức tạp và đánh index hiệu quả.
+
+Hệ thống lưu trữ thông tin người dùng với các thuộc tính: thông tin cá nhân (họ tên, email, số điện thoại), loại tài khoản (sinh viên/bảo vệ/admin), số lượt ra/vào còn lại và tổng số lượt đã mua, trạng thái hoạt động của tài khoản.
+
+Thông tin phương tiện được quản lý với các thuộc tính: biển số, loại xe, nhãn hiệu, màu sắc, URL hình ảnh trên Cloudinary.
+
+Lịch sử hoạt động ra/vào bãi được ghi nhận đầy đủ cho mỗi lần sử dụng, bao gồm: thời gian vào, thời gian ra, URL hình ảnh vào/ra trên Cloudinary, biển số phương tiện, thời lượng đỗ xe, và trạng thái phiên (đang đỗ/đã hoàn tất/bất thường). Dữ liệu này phục vụ cho việc tra cứu, thống kê và truy vết khi cần thiết.
+
+Hệ thống cũng lưu trữ các thông báo đã gửi đến người dùng với các thông tin: tiêu đề, nội dung, loại thông báo (xe vào/ra, mua lượt, cảnh báo).
+
+\subsection{Mô hình AI/ML}
+
+Mô hình học máy trong hệ thống được đề xuất nhằm tự động hóa việc nhận diện và xác thực phương tiện tại trạm ra/vào bãi đỗ xe. Hệ thống tích hợp nhiều mô hình học sâu chuyên biệt để xử lý các loại phương tiện khác nhau, đảm bảo độ chính xác cao và khả năng vận hành ổn định trong môi trường thực tế.
+
+\textbf{Nhận diện biển số xe} là chức năng cốt lõi được áp dụng cho mọi loại phương tiện. Quy trình xử lý bắt đầu bằng bước tiền xử lý hình ảnh, trong đó ảnh đầu vào từ camera được chuẩn hóa về kích thước phù hợp, điều chỉnh độ sáng và giảm nhiễu để tăng độ ổn định cho các bước tiếp theo.
+
+Hệ thống sử dụng mô hình YOLOv8  để phát hiện và định vị vùng chứa biển số trong ảnh. YOLOv8 là mô hình phát hiện đối tượng hiện đại, có khả năng xử lý real-time với độ chính xác cao. Sau khi vùng biển số được xác định, hệ thống tự động cắt (crop) vùng ảnh này ra để xử lý tiếp.
+
+Ảnh biển số sau khi cắt được đưa vào module nhận dạng ký tự. Hệ thống thực hiện phân tách biển số thành các vùng ký tự riêng lẻ dựa trên phân tích hình thái và vị trí. Mỗi ký tự được đưa vào một mô hình CNN do nhóm nghiên cứu tự xây dựng và huấn luyện. Mô hình CNN này học các đặc trưng hình ảnh của ký tự Việt Nam (bao gồm chữ số, chữ cái) để thực hiện phân loại chính xác. Kết quả nhận dạng của từng ký tự được tổng hợp theo thứ tự xuất hiện, tạo thành chuỗi văn bản hoàn chỉnh đại diện cho biển số phương tiện.
+
+\textbf{Nhận diện ô tô} được thực hiện thông qua mô hình mạng nơ-ron Siamese nhằm xác thực phương tiện dựa trên đặc trưng hình ảnh. Trong quá trình vận hành thực tế, hệ thống sử dụng YOLOv8 để phát hiện và định vị vùng xe ô tô trong khung hình, sau đó cắt vùng ảnh này ra để làm đầu vào cho mô hình Siamese. Việc cắt ảnh theo vùng xe giúp loại bỏ nền và các yếu tố nhiễu, cho phép mô hình Siamese tập trung vào đặc trưng của phương tiện và đạt hiệu suất tốt hơn.
+
+Mô hình Siamese được huấn luyện để học cách so sánh hai ảnh xe và xác định chúng có phải cùng một phương tiện hay không. Trong giai đoạn huấn luyện, mô hình học trực tiếp từ ảnh xe đầy đủ mà không cần bước phát hiện và cắt ảnh. Khi triển khai thực tế, mô hình chiều từ ảnh xe đã cắt, sau đó so sánh vector này với các vector đặc trưng đã lưu trong Firestore khi người dùng đăng ký xe. Kết quả so sánh cho ra điểm tương đồng (similarity score), hệ thống sử dụng ngưỡng để quyết định xe có khớp hay không.
+
+\textbf{Nhận diện khuôn mặt người điều khiển xe máy} được thực hiện thông qua thư viện DeepFace, một framework học sâu chuyên biệt cho nhận dạng khuôn mặt. DeepFace tích hợp nhiều mô hình tiên tiến và cung cấp các chức năng hoàn chỉnh từ phát hiện khuôn mặt, căn chỉnh, đến trích xuất đặc trưng và so khớp.
+
+Khi xe máy đến trạm ra/vào, camera chụp ảnh người điều khiển. DeepFace tự động phát hiện vùng khuôn mặt trong ảnh, thực hiện căn chỉnh để chuẩn hóa góc nhìn và kích thước, sau đó trích xuất vector đặc trưng khuôn mặt 512 chiều. Vector này được so sánh với vector đặc trưng đã lưu trong Firestore khi người dùng đăng ký xe máy. Kết quả so khớp cho ra điểm tương đồng, hệ thống dựa vào ngưỡng để xác định có phải đúng người hay không.
+
+Việc sử dụng DeepFace giúp đơn giản hóa quá trình triển khai và đảm bảo độ chính xác cao nhờ các mô hình đã được huấn luyện trên tập dữ liệu lớn. Kết quả nhận diện khuôn mặt được sử dụng như một yếu tố xác thực bổ sung, kết hợp với biển số để tăng cường bảo mật, đặc biệt hữu ích trong việc phát hiện các trường hợp sử dụng xe trái phép.
+
+\textbf{Triển khai và tích hợp hệ thống:} Tất cả các mô hình AI được triển khai trực tiếp trên trạm quét tại cổng ra/vào, giúp giảm độ trễ truyền dữ liệu và đảm bảo khả năng hoạt động ngay cả khi kết nối mạng không ổn định. Các file mô hình được lưu trữ cục bộ và load vào bộ nhớ khi hệ thống khởi động.
+
+Kết quả đầu ra của mô-đun AI/ML bao gồm: biển số xe được nhận dạng, loại phương tiện (ô tô/xe máy), điểm tin cậy của từng bước nhận diện, và điểm tương đồng khi so khớp khuôn mặt hoặc đặc trưng xe. Các thông tin này được gửi đến hệ thống backend để truy vấn và xác thực trên Firebase, từ đó đưa ra quyết định điều khiển cổng, ghi nhận lịch sử hoạt động, và kích hoạt cảnh báo khi phát hiện bất thường.
+
+Hiệu quả của mô hình được đánh giá liên tục thông qua các chỉ số: độ chính xác nhận diện biển số, tỷ lệ nhận dạng đúng/sai, thời gian xử lý trung bình cho mỗi lượt xe, và điểm tin cậy của các bước so khớp. Các chỉ số này được ghi tự động vào Firestore, phục vụ cho việc phân tích hiệu năng và tinh chỉnh hệ thống.
+
+Việc tích hợp đa mô hình AI vào hệ thống trạm ra/vào bãi đỗ xe không chỉ tự động hóa hoàn toàn quy trình kiểm soát phương tiện mà còn tăng cường bảo mật thông qua xác thực đa lớp. Hệ thống tạo nền tảng vững chắc cho các hướng phát triển trong tương lai như phân tích lưu lượng xe, tối ưu hóa quản lý bãi đỗ, và cảnh báo an toàn thông minh dựa trên học máy.

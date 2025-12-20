@@ -25,6 +25,11 @@ Lê Nguyễn Minh Phúc – 2251120040
 \input{chapters/front/glossaries.tex}
 \usepackage{enumitem}
 \makeglossaries
+\usepackage{float}
+\usepackage{tikz}
+\usepackage{placeins}
+
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric}
 % Begin thesis
 
 \begin{document}
@@ -44,10 +49,8 @@ Lê Nguyễn Minh Phúc – 2251120040
 % Main chapter in thesis
 \include{chapters/main/chapter1/container}
 \include{chapters/main/chapter2/container}
-\include{chapters/main/chapter3/container}
-\include{chapters/main/chapter4/container}
-\include{chapters/main/chapter5/container}
 % Back chapter in thesis
+\include{chapters/back/conclude/container}
 \include{chapters/back/references.tex}
 
 % Print references

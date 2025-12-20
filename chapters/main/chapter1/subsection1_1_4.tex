@@ -1,0 +1,31 @@
+\subsection{Mạng Siamese Network}
+
+Siamese Network là kiến trúc mạng nơ-ron gồm hai nhánh CNN chia sẻ trọng số, 
+được thiết kế để học độ tương đồng giữa hai ảnh đầu vào thông qua khoảng cách 
+trong không gian đặc trưng.
+
+Hai ảnh đầu vào được đưa qua mạng CNN để trích xuất embedding $\mathbf{f}_1$ 
+và $\mathbf{f}_2$. Khoảng cách Euclid giữa hai embedding được tính:
+\begin{equation}
+d(\mathbf{f}_1, \mathbf{f}_2) = \|\mathbf{f}_1 - \mathbf{f}_2\|_2
+\end{equation}
+
+Hàm mất mát Contrastive Loss được sử dụng để huấn luyện:
+\begin{equation}
+\mathcal{L}_{contrastive} = y \, d^2 + (1-y)\max(0, m - d)^2
+\end{equation}
+
+trong đó $y \in \{0,1\}$ biểu thị hai mẫu có cùng lớp hay không, 
+$d$ là khoảng cách embedding, và $m$ là margin phân tách các cặp khác lớp.
+\textbf{Ứng dụng vào hệ thống bãi đỗ xe thông minh:}
+\begin{itemize}
+    \item Mạng Siamese Network được huấn luyện trên tập dữ liệu VeRi-776, bao gồm khoảng 32.000 ảnh đầu xe, nhằm phục vụ việc so sánh và xác thực phương tiện khi ra vào bãi đỗ.
+    
+    \item Khi xe đi vào bãi, hệ thống camera chụp ảnh đầu xe và trích xuất vector đặc trưng (embedding) $\mathbf{f}_{in}$; embedding này được lưu trữ trong cơ sở dữ liệu.
+    
+    \item Khi xe rời khỏi bãi, hệ thống tiếp tục trích xuất embedding $\mathbf{f}_{out}$ từ ảnh đầu xe tại cổng ra và tiến hành so sánh với embedding $\mathbf{f}_{in}$ đã lưu.
+    
+    \item Nếu khoảng cách $d(\mathbf{f}_{in}, \mathbf{f}_{out}) < \tau$ (với $\tau$ là ngưỡng xác định trước), phương tiện được xác nhận là cùng một xe.
+    
+    \item Ngược lại, nếu khoảng cách lớn hơn hoặc bằng ngưỡng $\tau$, hệ thống sẽ phát hiện và cảnh báo hành vi bất thường.
+\end{itemize}

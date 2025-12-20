@@ -1,0 +1,84 @@
+\subsection{Thuật toán YOLO (You Only Look Once)}
+
+YOLO là thuật toán object detection real-time, xử lý toàn bộ ảnh trong một lần forward pass.
+
+\subsubsection{Nguyên lý hoạt động}
+
+\textbf{1. Grid Division:}
+Chia ảnh thành lưới $S \times S$ (ví dụ: 13×13)
+
+\textbf{2. Bounding Box Prediction:}
+Mỗi grid cell dự đoán $B$ bounding boxes, mỗi box có:
+\begin{equation}
+\text{Box} = (x, y, w, h, \text{confidence})
+\end{equation}
+
+\textbf{3. Confidence Score:}
+\begin{equation}
+\text{Confidence} = P(\text{Object}) \times \text{IOU}_{\text{pred}}^{\text{truth}}
+\end{equation}
+
+\textbf{4. Class Probability:}
+\begin{equation}
+P(\text{Class}_i | \text{Object}) \times \text{Confidence} = P(\text{Class}_i) \times \text{IOU}_{\text{pred}}^{\text{truth}}
+\end{equation}
+
+\textbf{5. Loss Function:}
+\begin{equation}
+\begin{split}
+L = \lambda_{\text{coord}} \sum_{i=0}^{S^2} \sum_{j=0}^{B} \mathbb{1}_{ij}^{\text{obj}} [(x_i - \hat{x}_i)^2 + (y_i - \hat{y}_i)^2] \\
++ \lambda_{\text{coord}} \sum_{i=0}^{S^2} \sum_{j=0}^{B} \mathbb{1}_{ij}^{\text{obj}} [(\sqrt{w_i} - \sqrt{\hat{w}_i})^2 + (\sqrt{h_i} - \sqrt{\hat{h}_i})^2] \\
++ \sum_{i=0}^{S^2} \sum_{j=0}^{B} \mathbb{1}_{ij}^{\text{obj}} (C_i - \hat{C}_i)^2 \\
++ \lambda_{\text{noobj}} \sum_{i=0}^{S^2} \sum_{j=0}^{B} \mathbb{1}_{ij}^{\text{noobj}} (C_i - \hat{C}_i)^2 \\
++ \sum_{i=0}^{S^2} \mathbb{1}_{i}^{\text{obj}} \sum_{c \in \text{classes}} (p_i(c) - \hat{p}_i(c))^2
+\end{split}
+\end{equation}
+trong đó:
+\begin{itemize}
+    \item $S$ là số ô lưới theo mỗi chiều của ảnh đầu vào;
+    \item $B$ là số bounding box được dự đoán tại mỗi ô lưới;
+    \item $(x_i, y_i, w_i, h_i)$ và $(\hat{x}_i, \hat{y}_i, \hat{w}_i, \hat{h}_i)$
+    lần lượt là tọa độ dự đoán và tọa độ ground truth của bounding box;
+    \item $C_i$ và $\hat{C}_i$ là độ tin cậy (confidence) dự đoán và giá trị thực;
+    \item $p_i(c)$ và $\hat{p}_i(c)$ là xác suất dự đoán và nhãn thực của lớp $c$;
+    \item $\mathbb{1}_{ij}^{\text{obj}}$ là hàm chỉ thị, bằng 1 nếu bounding box $j$
+    tại ô lưới $i$ chứa đối tượng, ngược lại bằng 0;
+    \item $\mathbb{1}_{ij}^{\text{noobj}}$ là hàm chỉ thị cho các ô không chứa đối tượng;
+    \item $\lambda_{\text{coord}}$ và $\lambda_{\text{noobj}}$ là các hệ số cân bằng
+    giữa sai số định vị và sai số độ tin cậy trong quá trình huấn luyện.
+\end{itemize}
+
+\subsubsection{Ứng dụng trong hệ thống}
+
+Trong hệ thống đề xuất, ba mô hình YOLO được triển khai nhằm phục vụ các
+nhiệm vụ nhận dạng khác nhau, bao gồm phát hiện biển số xe, nhận dạng ký tự
+trên biển số và phát hiện logo phương tiện.
+
+\textbf{1. Mô hình YOLO 1 – Phát hiện biển số xe:}
+\begin{itemize}
+    \item Đầu vào: Ảnh phương tiện đầy đủ, kích thước $640 \times 640$, tập dữ liệu gồm khoảng 4.500 ảnh;
+    \item Số lớp: 1 lớp (license\_plate);
+    \item Đầu ra: Tọa độ bounding box của biển số xe trong ảnh.
+\end{itemize}
+
+\textbf{2. Mô hình YOLO 2 – Phát hiện và phân tách ký tự:}
+\begin{itemize}
+    \item Đầu vào: Ảnh biển số đã được cắt (crop), kích thước $416 \times 416$, tập dữ liệu gồm khoảng 2.000 ảnh;
+    \item Số lớp: 1 lớp (character\_area);
+    \item Đầu ra: Vị trí và nhãn của từng ký tự trên biển số.
+\end{itemize}
+
+\textbf{3. Mô hình YOLO 3 – Phát hiện logo hãng xe:}
+\begin{itemize}
+    \item Đầu vào: Ảnh phần đầu xe ô tô, kích thước $640 \times 640$, tập dữ liệu gồm khoảng 18.000 ảnh;
+    \item Số lớp: 20 lớp logo thương hiệu (Toyota, Honda, Mazda, \ldots);
+    \item Đầu ra: Bounding box và nhãn thương hiệu logo tương ứng.
+\end{itemize}
+
+\textbf{Cấu hình huấn luyện và triển khai:}
+\begin{itemize}
+    \item Backbone: CSPDarknet53;
+    \item Phiên bản mô hình: YOLOv8;
+    \item Tốc độ xử lý: từ 60 đến 140 FPS khi triển khai trên GPU;
+    \item Độ chính xác: mAP@0.5 đạt trên 90\%.
+\end{itemize}
