@@ -1,26 +1,5 @@
-% \subsection{Mạng nơ-ron tích chập (CNN)}
 
-% Mạng nơ-ron tích chập (Convolutional Neural Network – CNN) là kiến trúc mạng học sâu được thiết kế để xử lý dữ liệu dạng lưới, đặc biệt là hình ảnh. CNN khai thác phép tích chập nhằm trích xuất các đặc trưng không gian quan trọng từ ảnh đầu vào.
-
-% Kiến trúc CNN bao gồm ba thành phần chính:
-% \begin{itemize}
-%     \item \textbf{Lớp tích chập (Convolution)}: Áp dụng các bộ lọc để trích xuất đặc trưng cục bộ từ ảnh.
-%     \item \textbf{Lớp gộp (Pooling)}: Giảm kích thước không gian của đặc trưng, giúp giảm nhiễu và chi phí tính toán.
-%     \item \textbf{Lớp kết nối đầy đủ (Fully Connected)}: Thực hiện phân loại dựa trên các đặc trưng đã học.
-% \end{itemize}
-
-% Phép tích chập tại một vị trí $(i,j)$ được biểu diễn như sau:
-% \begin{equation}
-% y_{i,j} = \sum_{m=0}^{M-1} \sum_{n=0}^{N-1} x_{i+m, j+n} \cdot w_{m,n} + b
-% \end{equation}
-
-% Hàm kích hoạt ReLU thường được sử dụng để tăng tính phi tuyến:
-% \begin{equation}
-% \text{ReLU}(x) = \max(0, x)
-% \end{equation}
-
-% Quá trình huấn luyện CNN dựa trên thuật toán lan truyền ngược (backpropagation) kết hợp các thuật toán tối ưu như SGD hoặc Adam nhằm tối thiểu hóa hàm mất mát.
-\subsection{Mạng nơ-ron tích chập (CNN)}
+\subsection{CNN}
 
 CNN là kiến trúc mạng neural chuyên xử lý dữ liệu dạng lưới như hình ảnh.
 \subsubsection{Kiến trúc cơ bản}
