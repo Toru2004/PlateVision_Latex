@@ -1,18 +1,68 @@
 \section{Thiết kế chi tiết}
 
-\subsection{Module nhận diện biển số xe}
-Module nhận diện biển số xe (License Plate Recognition – LPR) được xây dựng nhằm tự động phát hiện và trích xuất thông tin biển số từ hình ảnh hoặc luồng video camera giám sát tại bãi đỗ. Module này đóng vai trò nền tảng trong việc định danh phương tiện, phục vụ cho các chức năng kiểm soát ra/vào và quản lý lịch sử đỗ xe.
+\subsection{Module camera quét cổng ra/vào}
 
-Quy trình xử lý của module bao gồm các bước chính: (1) thu nhận hình ảnh từ camera, (2) phát hiện vùng chứa biển số bằng mô hình học sâu (CNN/YOLO), (3) tiền xử lý ảnh (chuẩn hóa kích thước, khử nhiễu, tăng cường độ tương phản), và (4) nhận dạng ký tự trên biển số bằng mô hình OCR chuyên biệt. Kết quả đầu ra là chuỗi ký tự biển số cùng với độ tin cậy tương ứng.
+Module camera quét cổng ra/vào được xây dựng nhằm tự động nhận diện phương tiện và xác thực thông tin khi xe vào/ra bãi đỗ. Module này đóng vai trò nền tảng trong việc định danh chính xác phương tiện, đảm bảo an ninh và phục vụ cho các chức năng kiểm soát truy cập cũng như quản lý lịch sử đỗ xe.
 
-Module được thiết kế theo hướng độc lập, cho phép triển khai dưới dạng service riêng biệt, dễ dàng mở rộng và tích hợp với các module khác thông qua API.
+\subsubsection{Quy trình xử lý chung}
 
-\subsection{Module nhận diện khuôn mặt/xe}
-Module nhận diện khuôn mặt và nhận diện xe được xây dựng nhằm tăng cường khả năng xác thực và giảm thiểu gian lận trong hệ thống. Module này cho phép đối sánh khuôn mặt người dùng hoặc đặc trưng xe với dữ liệu đã đăng ký trước đó.
+Module hoạt động theo luồng xử lý phân nhánh dựa trên loại phương tiện (xe máy hoặc ô tô), bao gồm các bước chính:
 
-Đối với nhận diện khuôn mặt, hệ thống sử dụng các mô hình học sâu như Siamese Network hoặc DeepFace để trích xuất vector đặc trưng (embedding) từ ảnh khuôn mặt. Các vector này được so sánh bằng các thước đo khoảng cách (cosine hoặc Euclidean) để xác định mức độ tương đồng.
+\textbf{Giai đoạn 1: Nhận diện biển số (chung cho cả xe máy và ô tô)}
+\begin{itemize}
+    \item Thu nhận hình ảnh từ camera giám sát tại cổng vào/ra
+    \item Phát hiện vùng chứa biển số bằng mô hình YOLOv8 (License Plate Detection)
+    \item Phát hiện vùng ký tự trên biển số bằng mô hình YOLOv8 (Character Region Detection)
+    \item Nhận dạng từng ký tự bằng mô hình CNN (Character Recognition)
+    \item Tổng hợp chuỗi ký tự thành biển số hoàn chỉnh với độ tin cậy
+\end{itemize}
 
-Đối với nhận diện xe, ngoài biển số, module tập trung vào các đặc trưng tổng thể của xe (màu sắc, kiểu dáng, logo, hình dạng thân xe). Cách tiếp cận này giúp nhận diện các trường hợp biển số bị che khuất hoặc làm giả.
+\textbf{Giai đoạn 2: Xác thực phương tiện (phân nhánh theo loại xe)}
+
+\textbf{2.1. Xử lý cho xe máy:}
+\begin{itemize}
+    \item \textbf{Khi xe vào:}
+    \begin{itemize}
+        \item Chụp ảnh khuôn mặt người lái xe từ camera
+        \item Trích xuất embedding khuôn mặt bằng DeepFace (VGG-Face backend)
+        \item Lưu trữ embedding cùng với biển số và timestamp vào database
+    \end{itemize}
+    
+    \item \textbf{Khi xe ra:}
+    \begin{itemize}
+        \item Chụp ảnh khuôn mặt người lái hiện tại
+        \item Trích xuất embedding khuôn mặt mới
+        \item Truy xuất embedding đã lưu từ database dựa trên biển số
+        \item So sánh hai embedding bằng Cosine Similarity với threshold = 0.35
+        \item Xác nhận: Nếu similarity > threshold → Cùng người lái → Cho phép ra
+        \item Cảnh báo: Nếu similarity $\le$ threshold $\rightarrow$ Khác người lái $\rightarrow$ Gửi cảnh báo
+
+    \end{itemize}
+\end{itemize}
+
+\textbf{2.2. Xử lý cho ô tô:}
+\begin{itemize}
+    \item \textbf{Khi xe vào:}
+    \begin{itemize}
+        \item Nhận diện logo xe bằng mô hình YOLOv8 (Logo Detection)
+        \item Chụp ảnh toàn cảnh đầu xe (góc chính diện)
+        \item Trích xuất feature vector từ ảnh đầu xe bằng Siamese Network (ResNet50 backbone)
+        \item Lưu trữ: logo, feature vector, ảnh đầu xe, biển số, timestamp vào database
+    \end{itemize}
+    
+    \item \textbf{Khi xe ra:}
+    \begin{itemize}
+        \item Nhận diện logo xe hiện tại
+        \item Chụp ảnh đầu xe hiện tại
+        \item Trích xuất feature vector mới từ ảnh đầu xe
+        \item Truy xuất thông tin đã lưu từ database dựa trên biển số
+        \item \textbf{Bước 1 - So sánh logo:} Kiểm tra logo hiện tại có khớp với logo đã lưu
+        \item \textbf{Bước 2 - So sánh đầu xe:} Tính khoảng cách Euclidean giữa hai feature vectors
+        \item Xác nhận: Nếu logo khớp VÀ distance < threshold → Cùng xe → Cho phép ra
+        \item Cảnh báo: Nếu logo khác HOẶC distance $\ge$ threshold $\rightarrow$ Khác xe $\rightarrow$ Gửi cảnh báo
+
+    \end{itemize}
+\end{itemize}
 
 \subsection{Module quản lý bãi đỗ}
 Module quản lý bãi đỗ chịu trách nhiệm điều phối toàn bộ hoạt động trong bãi xe, bao gồm quản lý vị trí đỗ, trạng thái chỗ trống, lịch sử ra/vào và thông tin phương tiện. Module này đóng vai trò trung tâm trong việc tổng hợp và xử lý dữ liệu từ các module nhận diện.
@@ -27,6 +77,8 @@ Ngoài ra, module còn cung cấp các API để web admin và ứng dụng mobi
 Ứng dụng hỗ trợ nhận thông báo thời gian thực (push notification) về các sự kiện quan trọng như xe vào/ra bãi, sắp hết thời gian đỗ hoặc phát hiện bất thường. Giao diện được thiết kế theo hướng thân thiện, dễ sử dụng và phù hợp với nhiều đối tượng người dùng.
 
 Về mặt kỹ thuật, ứng dụng mobile giao tiếp với hệ thống backend thông qua các API bảo mật, đảm bảo tính toàn vẹn và an toàn của dữ liệu.
+\subsection{Module mô phỏng phần cứng IoT}
+Module mô phỏng phần cứng IoT được xây dựng để mô phỏng hoạt động của các thiết bị cảm biến và vi điều khiển trong môi trường thực tế. Module này chịu trách nhiệm nhận dữ liệu từ firebase để điều khiển các thiết bị mô phỏng như đèn báo, cổng tự động.
 
 \subsection{Tích hợp các module}
 Các module trong hệ thống được tích hợp theo kiến trúc phân tán, trong đó mỗi module đảm nhiệm một chức năng riêng biệt nhưng có khả năng phối hợp chặt chẽ với nhau. Việc giao tiếp giữa các module được thực hiện thông qua API hoặc cơ chế message queue nhằm đảm bảo tính mở rộng và khả năng chịu lỗi.

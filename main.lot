@@ -1,13 +1,13 @@
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {1.1}{\ignorespaces Tổng hợp các nghiên cứu liên quan về hệ thống bãi đỗ xe thông minh}}{15}{}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {2.1}{\ignorespaces Kết quả huấn luyện YOLO - Nhận diện biển số}}{37}{}%
-\contentsline {table}{\numberline {2.2}{\ignorespaces Kết quả huấn luyện YOLO - Nhận diện vùng ký tự}}{38}{}%
-\contentsline {table}{\numberline {2.3}{\ignorespaces Kết quả huấn luyện YOLO - Nhận diện logo xe}}{39}{}%
-\contentsline {table}{\numberline {2.4}{\ignorespaces Kết quả huấn luyện CNN - Nhận dạng ký tự}}{40}{}%
-\contentsline {table}{\numberline {2.5}{\ignorespaces Kết quả huấn luyện Siamese Network}}{41}{}%
-\contentsline {table}{\numberline {2.6}{\ignorespaces Kết quả kiểm thử DeepFace qua 30 rounds (threshold = 0.35)}}{42}{}%
-\contentsline {table}{\numberline {2.7}{\ignorespaces So sánh tổng quan hiệu năng các mô hình}}{42}{}%
-\contentsline {table}{\numberline {2.8}{\ignorespaces Tiêu chí đánh giá định lượng cho AI models}}{43}{}%
-\contentsline {table}{\numberline {2.9}{\ignorespaces Bảng tiêu chí đánh giá chức năng nghiệp vụ}}{44}{}%
+\contentsline {table}{\numberline {2.1}{\ignorespaces Kết quả huấn luyện YOLO - Nhận diện biển số}}{38}{}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces Kết quả huấn luyện YOLO - Nhận diện vùng ký tự}}{39}{}%
+\contentsline {table}{\numberline {2.3}{\ignorespaces Kết quả huấn luyện YOLO - Nhận diện logo xe}}{40}{}%
+\contentsline {table}{\numberline {2.4}{\ignorespaces Kết quả huấn luyện CNN - Nhận dạng ký tự}}{41}{}%
+\contentsline {table}{\numberline {2.5}{\ignorespaces Kết quả huấn luyện Siamese Network}}{42}{}%
+\contentsline {table}{\numberline {2.6}{\ignorespaces Kết quả kiểm thử DeepFace qua 30 rounds (threshold = 0.35)}}{43}{}%
+\contentsline {table}{\numberline {2.7}{\ignorespaces So sánh tổng quan hiệu năng các mô hình}}{43}{}%
+\contentsline {table}{\numberline {2.8}{\ignorespaces Tiêu chí đánh giá định lượng cho AI models}}{44}{}%
+\contentsline {table}{\numberline {2.9}{\ignorespaces Bảng tiêu chí đánh giá chức năng nghiệp vụ}}{45}{}%
 \addvspace {10\p@ }

@@ -155,6 +155,12 @@
 \renewcommand{\cfttabpagefont}{\normalfont}
 \renewcommand{\cfttabpresnum}{Bảng~}
 \renewcommand{\cfttabaftersnum}{:~}
+% ===== BỎ KHOẢNG CÁCH GIỮA CÁC CHƯƠNG TRONG DANH MỤC BẢNG =====
+\setlength{\cftbeforetabskip}{0pt}
+\makeatletter
+
+\makeatother
+
 \setlength{\cfttabnumwidth}{5em}
 \setlength{\cfttabindent}{0pt}
 
@@ -163,6 +169,7 @@
 \setlength{\cftbeforelottitleskip}{-20pt}
 \setlength{\cftafterlottitleskip}{10pt}
 \setlength{\cftbeforetabskip}{5pt}
+
 
 \listoftables
 
