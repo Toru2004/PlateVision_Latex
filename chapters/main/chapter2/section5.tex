@@ -81,8 +81,6 @@ Về mặt kỹ thuật, ứng dụng mobile giao tiếp với hệ thống back
 Module mô phỏng phần cứng IoT được xây dựng để mô phỏng hoạt động của các thiết bị cảm biến và vi điều khiển trong môi trường thực tế. Module này chịu trách nhiệm nhận dữ liệu từ firebase để điều khiển các thiết bị mô phỏng như đèn báo, cổng tự động.
 
 \subsection{Tích hợp các module}
-Các module trong hệ thống được tích hợp theo kiến trúc phân tán, trong đó mỗi module đảm nhiệm một chức năng riêng biệt nhưng có khả năng phối hợp chặt chẽ với nhau. Việc giao tiếp giữa các module được thực hiện thông qua API hoặc cơ chế message queue nhằm đảm bảo tính mở rộng và khả năng chịu lỗi.
-
-Luồng xử lý tổng thể bắt đầu từ việc camera ghi nhận hình ảnh, sau đó dữ liệu được chuyển đến các module nhận diện để phân tích. Kết quả nhận diện được gửi về module quản lý bãi đỗ để cập nhật trạng thái hệ thống và đồng bộ với ứng dụng mobile cũng như web admin.
+Các module trong hệ thống được tích hợp theo kiến trúc phân lấy firebase là trung tâm đồng bộ, trong đó mỗi module đảm nhiệm một chức năng riêng biệt nhưng có khả năng phối hợp chặt chẽ với nhau. 
 
 Thiết kế tích hợp này giúp hệ thống hoạt động linh hoạt, dễ dàng nâng cấp từng module riêng lẻ mà không ảnh hưởng đến toàn bộ kiến trúc.

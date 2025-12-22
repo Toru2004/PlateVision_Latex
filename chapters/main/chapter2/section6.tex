@@ -1,3 +1,42 @@
+\section{Kết quả khảo sát thực tế}
+
+
+Để đánh giá nhu cầu và mức độ cần thiết của hệ thống, nhóm nghiên cứu đã tiến hành khảo sát 151 người dùng tiềm năng về thói quen sử dụng dịch vụ gửi xe và vấn đề mất thẻ xe.
+
+
+\subsubsection{Tần suất mất thẻ xe}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{graphics/main/chapter2/the_xe.jpg}
+    \caption{Thời gian gần nhất người dùng bị mất thẻ xe}
+    \label{fig:survey_q3}
+\end{figure}
+
+Trong số những người từng mất thẻ, 78.1\% không nhớ hoặc đã rất lâu không gặp vấn đề này, 10.6\% mất thẻ trong vòng 1-6 tháng trước, và 6\% mất thẻ trong tháng gần đây. Kết quả này cho thấy mặc dù không phổ biến, nhưng vấn đề mất thẻ vẫn xảy ra và gây phiền toái cho người dùng.
+
+\subsubsection{Mức độ sử dụng dịch vụ gửi xe không cần thẻ}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{graphics/main/chapter2/dv.jpg}
+    \caption{Mức độ mong muốn sử dụng dịch vụ gửi xe không cần thẻ}
+    \label{fig:survey_q1}
+\end{figure}
+
+Kết quả cho thấy 44.4\% người dùng rất muốn sử dụng hệ thống gửi xe không cần thẻ (quét QR, nhận diện biển số), trong khi 46.4\% cho rằng có thể sử dụng nếu tiện lợi. Chỉ 9.3\% không quan tâm đến giải pháp này. Điều này chứng tỏ có nhu cầu thực tế cao (90.8\%) đối với hệ thống tự động hóa.
+
+
+\subsubsection{Kết luận từ khảo sát}
+
+\begin{itemize}
+    \item \textbf{Nhu cầu cao:} Hơn 90\% người dùng muốn sử dụng hệ thống gửi xe tự động không cần thẻ
+    \item \textbf{Vấn đề mất thẻ tồn tại:} 23.2\% người dùng từng gặp phải, cần giải pháp thay thế
+    \item \textbf{Tiềm năng ứng dụng:} Hệ thống đề xuất đáp ứng đúng nhu cầu thực tế của người dùng
+\end{itemize}
+
+Kết quả khảo sát này khẳng định tính cần thiết và khả thi của việc xây dựng hệ thống bãi đỗ xe thông minh tích hợp AI, loại bỏ hoàn toàn thẻ xe truyền thống.
+
 \section{Kết quả huấn luyện mô hình AI}
 
 Các mô hình AI được huấn luyện trên GPU NVIDIA RTX 3060 với framework PyTorch 2.1 và TensorFlow 2.15. Dữ liệu được chia theo tỷ lệ 80\% training, 10\% validation và 10\% testing.
@@ -332,80 +371,113 @@ FPS & Frames per second & $\geq$ 10 FPS & Đủ cho real-time \\
 \subsection{Tiêu chí đánh giá chức năng nghiệp vụ}
 
 Các chức năng nghiệp vụ được đánh giá dựa trên khả năng đáp ứng yêu cầu thực tế của bãi đỗ xe thông minh.
+\subsection{Tiêu chí đánh giá chức năng nghiệp vụ}
+
+Các chức năng nghiệp vụ được đánh giá dựa trên khả năng đáp ứng yêu cầu thực tế của từng module trong hệ thống.
+
+\subsubsection{Module Camera quét cổng ra/vào}
 
 \begin{table}[H]
-\caption{Bảng tiêu chí đánh giá chức năng nghiệp vụ}
-\label{tab:functional_criteria}
+\caption{Tiêu chí đánh giá Module Camera quét cổng ra/vào}
+\label{tab:criteria_camera}
 \centering
-\begin{tabular}{|p{4cm}|p{5cm}|p{3.5cm}|}
+\begin{tabular}{|p{4.5cm}|p{5.5cm}|p{3cm}|}
 \hline
-\textbf{Chức năng} & \textbf{Tiêu chí kiểm tra} & \textbf{Ngưỡng chấp nhận} \\
-\hline
-\multicolumn{3}{|c|}{\textbf{Module Desktop Application}} \\
+\textbf{Chức năng} & \textbf{Tiêu chí kiểm tra} & \textbf{Ngưỡng} \\
 \hline
 Nhận diện biển số & Tỷ lệ nhận diện đúng trong điều kiện chuẩn & $\geq$ 95\% \\
 \hline
-Nhận diện khuôn mặt & Tỷ lệ xác thực đúng người dùng & $\geq$ 95\% \\
+Nhận diện khuôn mặt & Tỷ lệ xác thực đúng người lái xe máy & $\geq$ 95\% \\
 \hline
-So khớp xe vào/ra & Tỷ lệ khớp đúng cặp xe (biển số + đầu xe) & $\geq$ 90\% \\
+Nhận diện logo xe & Tỷ lệ nhận diện đúng logo ô tô & $\geq$ 75\% \\
 \hline
-Mở barrier tự động & Thời gian phản hồi từ nhận diện đến mở barrier & $\leq$ 3s \\
+So khớp đầu xe (Siamese) & Tỷ lệ khớp đúng cặp xe vào/ra & $\geq$ 95\% \\
 \hline
-Cảnh báo xe lạ & Phát hiện và gửi cảnh báo khi xe rời trái phép & 100\% \\
+Hiển thị hình ảnh real-time & Hiển thị hình ảnh từ camera & $\geq$ 15 FPS \\
 \hline
-Hiển thị video real-time & Streaming video từ camera không giật lag & $\geq$ 15 FPS \\
+Thống kê xe vào/ra & Cập nhật số liệu real-time & 100\% \\
 \hline
-Thống kê xe vào/ra & Cập nhật số liệu real-time chính xác & 100\% \\
+Thời gian xử lý & Từ nhận diện đến ghi Firebase & $\leq$ 5s \\
 \hline
-\multicolumn{3}{|c|}{\textbf{Module Mobile Application}} \\
+\end{tabular}
+\end{table}
+
+\subsubsection{Module quản lý bãi đỗ}
+
+\begin{table}[H]
+\caption{Tiêu chí đánh giá Module quản lý bãi đỗ}
+\label{tab:criteria_management}
+\centering
+\begin{tabular}{|p{4.5cm}|p{5.5cm}|p{3cm}|}
 \hline
-Đăng ký/Đăng nhập & Xác thực thành công và chuyển trang & 100\% \\
+\textbf{Chức năng} & \textbf{Tiêu chí kiểm tra} & \textbf{Ngưỡng} \\
+\hline
+Lưu trữ dữ liệu & Tính toàn vẹn dữ liệu trên Firebase & 100\% \\
+\hline
+Đồng bộ real-time & Đồng bộ giữa Desktop và Mobile & $\leq$ 2s \\
+\hline
+Tính toán phí đỗ xe & Tính phí chính xác theo lượt & 100\% \\
+\hline
+Cảnh báo xe lạ & Phát hiện và gửi cảnh báo khi bất thường & 100\% \\
+
+\hline
+Backup dữ liệu & Lưu lịch sử vào Firestore đầy đủ & 100\% \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Module Mobile Application}
+
+\begin{table}[H]
+\caption{Tiêu chí đánh giá Module Mobile Application}
+\label{tab:criteria_mobile}
+\centering
+\begin{tabular}{|p{4.5cm}|p{5.5cm}|p{3cm}|}
+\hline
+\textbf{Chức năng} & \textbf{Tiêu chí kiểm tra} & \textbf{Ngưỡng} \\
+\hline
+Đăng ký/Đăng nhập & Xác thực Firebase Authentication & 100\% \\
 \hline
 Quản lý xe & CRUD thông tin xe (thêm/sửa/xóa) & 100\% \\
 \hline
-Xác nhận rời bãi & Hiển thị mã QR và gửi thông báo đến desktop & 100\% \\
+Xác nhận rời bãi & Hiển thị mã QR và gửi thông báo & 100\% \\
 \hline
-Thanh toán VNPAY & Xử lý giao dịch chính xác, không mất tiền & 100\% \\
+Thanh toán VNPAY & Xử lý giao dịch chính xác & 100\% \\
 \hline
-Nhận push notification & Nhận được thông báo cảnh báo trong thời gian thực & $\leq$ 5s \\
+Nhận push notification & Nhận FCM notification & $\leq$ 5s \\
 \hline
-Xem lịch sử & Hiển thị đầy đủ các lần vào/ra bãi & 100\% \\
+Xem lịch sử & Hiển thị lịch sử từ Firestore & 100\% \\
 \hline
 Tương thích thiết bị & Chạy mượt trên Android 8.0 - 14 & 100\% \\
 \hline
-\multicolumn{3}{|c|}{\textbf{Module Backend Server}} \\
+Đồng bộ real-time & Cập nhật danh sách xe từ Firebase & $\leq$ 2s \\
 \hline
-Xử lý API & Response time cho các request & $\leq$ 500ms \\
+\end{tabular}
+\end{table}
+
+\subsubsection{Module IoT Hardware}
+
+\begin{table}[H]
+\caption{Tiêu chí đánh giá Module IoT Hardware}
+\label{tab:criteria_iot}
+\centering
+\begin{tabular}{|p{4.5cm}|p{5.5cm}|p{3cm}|}
 \hline
-Lưu trữ dữ liệu & Tính toàn vẹn dữ liệu, không mất thông tin & 100\% \\
+\textbf{Chức năng} & \textbf{Tiêu chí kiểm tra} & \textbf{Ngưỡng} \\
 \hline
-Đồng bộ real-time & Đồng bộ dữ liệu giữa desktop và mobile & $\leq$ 2s \\
+Kết nối ESP32 - Firebase & Duy trì kết nối WiFi ổn định & $\geq$ 99\% \\
 \hline
-Xác thực và phân quyền & JWT token validation, role-based access & 100\% \\
-\hline
-Xử lý đồng thời & Phục vụ đồng thời nhiều request không crash & $\geq$ 50 req/s \\
-\hline
-Backup dữ liệu & Tự động backup database hàng ngày & 100\% \\
-\hline
-Error handling & Log lỗi chi tiết, không expose sensitive info & 100\% \\
-\hline
-\multicolumn{3}{|c|}{\textbf{Module IoT Hardware}} \\
-\hline
-Kết nối ESP32 & Duy trì kết nối WiFi ổn định với server & $\geq$ 99\% uptime \\
-\hline
-Điều khiển Servo & Thời gian phản hồi từ nhận lệnh đến chuyển động & $\leq$ 1s \\
+Điều khiển Servo & Thời gian từ nhận lệnh đến mở barrier & $\leq$ 1s \\
 \hline
 Cảm biến siêu âm & Phát hiện xe trong phạm vi 2-400cm & $\geq$ 95\% \\
-\hline
-Recovery sau mất điện & Tự động kết nối lại khi có điện trở lại & $\leq$ 30s \\
+
 \hline
 \end{tabular}
 \end{table}
 
 \textbf{Ghi chú:}
 \begin{itemize}
-    \item Các chức năng có ngưỡng 100\% là các chức năng quan trọng (critical functions) không được phép sai
-    \item Các chức năng liên quan đến AI/ML có ngưỡng 90-95\% do tính chất xác suất của machine learning
-    \item Thời gian phản hồi được đo trong điều kiện mạng ổn định (WiFi 5GHz hoặc 4G LTE)
-    \item Tất cả các ngưỡng được thiết lập dựa trên yêu cầu thực tế và khảo sát người dùng
+    \item Các chức năng có ngưỡng 100\% là chức năng quan trọng không được phép sai
+    \item Các chức năng AI/ML có ngưỡng 75-95\% do tính chất xác suất
+    \item Thời gian được đo trong điều kiện mạng ổn định (WiFi 5GHz)
 \end{itemize}
