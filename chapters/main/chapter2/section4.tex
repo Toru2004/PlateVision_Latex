@@ -510,8 +510,76 @@ Việc sử dụng DeepFace giúp đơn giản hóa quá trình triển khai và
 
 \textbf{Triển khai và tích hợp hệ thống:} Tất cả các mô hình AI được triển khai trực tiếp trên trạm quét tại cổng ra/vào, giúp giảm độ trễ truyền dữ liệu và đảm bảo khả năng hoạt động ngay cả khi kết nối mạng không ổn định. Các file mô hình được lưu trữ cục bộ và load vào bộ nhớ khi hệ thống khởi động.
 
-Kết quả đầu ra của mô-đun AI/ML bao gồm: biển số xe được nhận dạng, loại phương tiện (ô tô/xe máy), điểm tin cậy của từng bước nhận diện, và điểm tương đồng khi so khớp khuôn mặt hoặc đặc trưng xe. Các thông tin này được gửi đến hệ thống backend để truy vấn và xác thực trên Firebase, từ đó đưa ra quyết định điều khiển cổng, ghi nhận lịch sử hoạt động, và kích hoạt cảnh báo khi phát hiện bất thường.
+Kết quả đầu ra của mô-đun AI/ML bao gồm: biển số xe được nhận dạng, loại phương tiện (ô tô/xe máy), điểm tin cậy của từng bước nhận diện và điểm tương đồng khi so khớp khuôn mặt hoặc đặc trưng xe. Các thông tin này được gửi đến hệ thống backend để truy vấn và xác thực trên Firebase, từ đó đưa ra quyết định điều khiển cổng, ghi nhận lịch sử hoạt động và kích hoạt cảnh báo khi phát hiện bất thường.
 
 Hiệu quả của mô hình được đánh giá liên tục thông qua các chỉ số: độ chính xác nhận diện biển số, tỷ lệ nhận dạng đúng/sai, thời gian xử lý trung bình cho mỗi lượt xe, và điểm tin cậy của các bước so khớp. Các chỉ số này được ghi tự động vào Firestore, phục vụ cho việc phân tích hiệu năng và tinh chỉnh hệ thống.
 
 Việc tích hợp đa mô hình AI vào hệ thống trạm ra/vào bãi đỗ xe không chỉ tự động hóa hoàn toàn quy trình kiểm soát phương tiện mà còn tăng cường bảo mật thông qua xác thực đa lớp. Hệ thống tạo nền tảng vững chắc cho các hướng phát triển trong tương lai như phân tích lưu lượng xe, tối ưu hóa quản lý bãi đỗ, và cảnh báo an toàn thông minh dựa trên học máy.
+
+
+\subsection{Phân tích so sánh và tính cấp thiết của mô hình đề xuất}
+Trong quá trình thiết kế hệ thống, việc lựa chọn kiến trúc và mô hình học máy không chỉ dựa trên độ chính xác lý thuyết mà còn phải xét đến khả năng thích nghi với dữ liệu thực tế, độ ổn định khi triển khai và khả năng mở rộng hệ thống trong tương lai. Do đó, để làm rõ tính hợp lý cũng như tính cấp thiết của mô hình được đề xuất, nghiên cứu này tiến hành phân tích so sánh định tính giữa phương pháp đề xuất và các hướng tiếp cận truyền thống hoặc đơn giản hơn đã được sử dụng phổ biến trong các hệ thống trước đây.
+
+\begin{table}[H]
+\centering
+\caption{So sánh các phương pháp phát hiện biển số, vùng ký tự và logo xe}
+\begin{tabular}{|p{3.8cm}|p{3.2cm}|p{3.2cm}|p{5.5cm}|}
+\hline
+\textbf{Phương pháp} & \textbf{Đặc trưng sử dụng} & \textbf{Mức độ thích nghi dữ liệu thực} & \textbf{Đánh giá trong bối cảnh bài toán} \\
+\hline
+HOG + SVM & Đặc trưng thủ công & Thấp & Không đủ khả năng phát hiện vật thể nhỏ, nhiều đối tượng đồng thời và trong bối cảnh phức tạp \\
+\hline
+SSD-MobileNet & Học sâu & Trung bình & Tốc độ tốt nhưng độ chính xác giảm mạnh với biển số và logo kích thước nhỏ \\
+\hline
+\textbf{YOLO (đề xuất)} & \textbf{Học sâu đa tỉ lệ} & \textbf{Cao} & \textbf{Có khả năng phát hiện đồng thời nhiều đối tượng ở nhiều tỉ lệ khác nhau trong thời gian thực, phù hợp với dữ liệu camera giám sát ngoài trời} \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{So sánh các phương pháp nhận dạng ký tự trên biển số}
+\begin{tabular}{|p{3.5cm}|p{3.8cm}|p{3.2cm}|p{5.2cm}|}
+\hline
+\textbf{Phương pháp} & \textbf{Cách tiếp cận} & \textbf{Khả năng thích nghi biến dạng} & \textbf{Đánh giá trong bối cảnh bài toán} \\
+\hline
+Tesseract OCR & OCR truyền thống dựa trên đặc trưng và luật & Kém & Hoạt động tốt với ảnh văn bản rõ nét, nền sạch; tuy nhiên hiệu quả thấp đối với ảnh biển số có nhiễu, mờ, nghiêng hoặc độ phân giải thấp \\
+\hline
+EasyOCR & OCR dựa trên deep learning tổng quát & Trung bình & Có khả năng nhận dạng văn bản trong nhiều ngữ cảnh, nhưng không được tối ưu riêng cho biển số, độ chính xác giảm khi ký tự nhỏ, mờ hoặc dính liền \\
+\hline
+\textbf{CNN (đề xuất)} & \textbf{Học đặc trưng tự động, huấn luyện chuyên biệt} & \textbf{Tốt} & \textbf{Được huấn luyện trực tiếp trên dữ liệu biển số, có khả năng học các biến dạng, mờ, vỡ nét, giúp đạt độ chính xác cao hơn trong môi trường không kiểm soát} \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+\centering
+\caption{So sánh các phương pháp đối sánh ảnh đầu xe}
+\begin{tabular}{|p{3.8cm}|p{3.5cm}|p{3cm}|p{5.2cm}|}
+\hline
+\textbf{Phương pháp} & \textbf{Chiến lược so sánh} & \textbf{Khả năng phân biệt tinh} & \textbf{Đánh giá trong bối cảnh bài toán} \\
+\hline
+ResNet + Cosine & So sánh đặc trưng tĩnh & Trung bình & Không tối ưu cho bài toán hai ảnh cùng loại xe, dễ nhầm lẫn các xe có ngoại hình tương tự \\
+\hline
+\textbf{Siamese Network (đề xuất)} & \textbf{Học độ đo tương đồng} & \textbf{Cao} & \textbf{Được huấn luyện trực tiếp để phân biệt cặp giống/khác, đặc biệt hiệu quả trong các trường hợp xe cùng mẫu, cùng màu} \\
+\hline
+\end{tabular}
+\end{table}
+\begin{table}[H]
+\centering
+\caption{So sánh các phương pháp nhận diện khuôn mặt}
+\begin{tabular}{|p{3.8cm}|p{3.2cm}|p{3.2cm}|p{5.2cm}|}
+\hline
+\textbf{Phương pháp} & \textbf{Khả năng chịu biến thiên} & \textbf{Độ ổn định thực tế} & \textbf{Đánh giá trong bối cảnh bài toán} \\
+
+\hline
+HOG + SVM & Kém & Trung bình & Không đủ bền vững với góc nghiêng, che mặt và ánh sáng yếu \\
+\hline
+\textbf{DeepFace (đề xuất)} & \textbf{Tốt} & \textbf{Cao} & \textbf{Đã được chứng minh hiệu quả trong môi trường không kiểm soát như camera giám sát} \\
+\hline
+\end{tabular}
+\end{table}
+
+
+Từ các phân tích so sánh trên có thể thấy rằng, các phương pháp truyền thống hoặc các mô hình đơn giản tuy có ưu điểm về mặt triển khai và chi phí tính toán, nhưng không đáp ứng được yêu cầu về độ chính xác, độ bền vững và khả năng thích nghi trong môi trường triển khai thực tế. Do đó, việc lựa chọn các mô hình học sâu chuyên biệt như YOLO, CNN, Siamese Network và DeepFace nhằm nâng cao hiệu năng, mà còn là một yêu cầu mang tính tất yếu để đảm bảo tính khả thi và độ tin cậy của hệ thống trong ứng dụng quản lý bãi đỗ xe thông minh.

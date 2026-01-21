@@ -139,21 +139,31 @@ Epoch & Train Loss & Val Loss & Precision & Recall & mAP50 & mAP50-95 \\
 \caption{Kết quả huấn luyện YOLO - Nhận diện logo xe}
 \label{tab:yolo_logo}
 \centering
-\begin{tabular}{ccccccc}
+\begin{tabular}{ccccc}
 \toprule
-Epoch & Train Loss & Val Loss & Precision & Recall & mAP50 & mAP50-95 \\
+\textbf{Epoch} & \textbf{Precision} & \textbf{Recall} & \textbf{mAP@50} & \textbf{mAP@50--95} \\
 \midrule
-1 & 225.1690 & 19.6060 & 0.2347 & 0.2363 & 0.1711 & 0.0728 \\
-5 & 20.8660 & 191.5660 & 0.5310 & 0.3913 & 0.4345 & 0.1962 \\
-10 & 19.3360 & 182.2720 & 0.6530 & 0.5121 & 0.5681 & 0.2704 \\
-15 & 186.0490 & 18.0310 & 0.7502 & 0.5861 & 0.6557 & 0.3102 \\
-20 & 179.8250 & 175.8070 & 0.7428 & 0.6192 & 0.7004 & 0.3298 \\
-25 & 173.7750 & 175.8680 & 0.7773 & 0.6494 & 0.7315 & 0.3496 \\
-30 & 168.2360 & 175.2640 & 0.8136 & 0.6775 & 0.7597 & 0.3574 \\
-35 & 162.6990 & 175.8210 & 0.8097 & 0.6794 & 0.7670 & 0.3633 \\
-40 & 155.7570 & 175.6170 & 0.8059 & 0.7073 & 0.7683 & 0.3667 \\
-45 & 144.1050 & 177.4670 & 0.7823 & 0.7118 & 0.7686 & 0.3648 \\
-50 & 136.3520 & 178.5010 & 0.7953 & 0.7005 & 0.7631 & 0.3656 \\
+1   & 0.00331 & 0.36364 & 0.03150 & 0.01596 \\
+5   & 0.00556 & 0.42424 & 0.25907 & 0.21921 \\
+10  & 0.96976 & 0.27848 & 0.38029 & 0.31392 \\
+15  & 0.63940 & 0.60441 & 0.68970 & 0.54977 \\
+20  & 0.79072 & 0.73299 & 0.80746 & 0.62392 \\
+25  & 0.72315 & 0.78283 & 0.83027 & 0.63635 \\
+30  & 0.90837 & 0.89411 & 0.92853 & 0.70909 \\
+35  & 0.87781 & 0.86027 & 0.92734 & 0.71647 \\
+40  & 0.97077 & 0.85941 & 0.94044 & 0.71874 \\
+45  & 0.90830 & 0.89363 & 0.93907 & 0.72093 \\
+50  & 0.86308 & 0.93522 & 0.93975 & 0.71326 \\
+55  & 0.92155 & 0.91498 & 0.94362 & 0.71268 \\
+60  & 0.93237 & 0.87490 & 0.94299 & 0.74959 \\
+65  & 0.93518 & 0.86485 & 0.94762 & 0.74221 \\
+70  & 0.91309 & 0.90545 & 0.95270 & 0.75898 \\
+75  & 0.91034 & 0.91939 & 0.95072 & 0.73651 \\
+80  & 0.92377 & 0.90975 & 0.94294 & 0.72788 \\
+85  & 0.86946 & 0.93013 & 0.94294 & 0.73635 \\
+90  & 0.88478 & 0.91513 & 0.94425 & 0.73251 \\
+95  & 0.95819 & 0.88112 & 0.95619 & 0.73353 \\
+100 & 0.95881 & 0.88468 & 0.95561 & 0.75080 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -165,7 +175,7 @@ Epoch & Train Loss & Val Loss & Precision & Recall & mAP50 & mAP50-95 \\
     \label{fig:yolo_logo_training}
 \end{figure}
 
-\textbf{Phân tích kết quả:} Loss values cao (>100) xuất phát từ đặc thù bộ dữ liệu nhiều classes (25 logo) với kích thước object nhỏ và biến thể hình dạng lớn. Mặc dù vậy, Precision cải thiện đáng kể từ 23.47\% (epoch 1) lên 79.53\% (epoch 50), trong khi Recall tăng từ 23.63\% lên 70.05\%. Chỉ số mAP50 = 76.31\% chấp nhận được cho multi-class small object detection với độ phức tạp cao.
+\textbf{Phân tích kết quả:} Các chỉ số đánh giá của mô hình cải thiện rõ rệt theo số epoch huấn luyện. Precision tăng từ 0.33\% (epoch 1) lên 95.88\% (epoch 100), trong khi Recall tăng từ 36.36\% lên 88.47\%. Đồng thời, mAP@50 tăng từ 3.15\% lên 95.56\% và mAP@50--95 đạt 75.08\% ở epoch 100. Từ khoảng epoch 30 trở đi, các chỉ số bắt đầu ổn định, cho thấy mô hình đã hội tụ và đạt hiệu năng tốt đối với bài toán phát hiện đối tượng đa lớp với các đối tượng nhỏ và độ phức tạp cao.
 
 \subsection{CNN - Nhận dạng ký tự biển số}
 

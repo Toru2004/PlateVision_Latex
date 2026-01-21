@@ -75,18 +75,22 @@
 {\thesubsection}
 {1em}
 {}
-%định dạng mục lục
-% \widowpenalty=10000
-% \clubpenalty=10000
-% \raggedbottom
-% =========================
-% GLOSSARIES
-% =========================
+
 \makeglossaries
 
-% =========================
-% BEGIN DOCUMENT
-% =========================
+\usepackage{caption}
+
+\captionsetup{
+    labelfont=it,
+    textfont=it
+}
+
+\captionsetup[table]{
+    labelfont=it,
+    textfont=it
+}
+
+
 \begin{document}
 
 % ===== TRANG BÌA - KHÔNG ĐÁNH SỐ =====
@@ -139,6 +143,7 @@
 \setlength{\cftafterloftitleskip}{10pt}
 \setlength{\cftbeforefigskip}{5pt}
 
+
 \listoffigures
 \clearpage
 
@@ -187,6 +192,9 @@
 % ===== NỘI DUNG CHÍNH - ĐÁNH SỐ Ả-RẬP (1, 2, 3...) =====
 \pagenumbering{arabic}
 \setcounter{page}{1}
+\begin{spacing}{1.5}
+
+
 
 % Các chapter
 \include{chapters/front/introduction/container}
@@ -195,7 +203,7 @@
 \include{chapters/back/conclude/container}
 \include{chapters/back/references}
 
-
+\end{spacing}
 
 % 15. TÀI LIỆU THAM KHẢO
 \clearpage

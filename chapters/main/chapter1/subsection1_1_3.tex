@@ -1,53 +1,59 @@
 \subsection{Thuật toán YOLO (You Only Look Once)}
+YOLO (You Only Look Once) là một thuật toán phát hiện đối tượng thời gian thực, trong đó toàn bộ ảnh đầu vào được xử lý chỉ trong một lần lan truyền xuôi (forward pass) của mạng nơ-ron. Nhờ cơ chế dự đoán đồng thời vị trí và nhãn đối tượng, YOLO cho phép đạt tốc độ xử lý cao nhưng vẫn đảm bảo độ chính xác. Hiệu năng của mô hình YOLO sau huấn luyện không được đánh giá qua hàm mất mát mà thông qua các chỉ số định lượng dựa trên sự so sánh giữa dự đoán và ground truth.
 
-YOLO là thuật toán object detection real-time, xử lý toàn bộ ảnh trong một lần forward pass.
-
-\subsubsection{Nguyên lý hoạt động}
-
-\textbf{1. Grid Division:}
-Chia ảnh thành lưới $S \times S$ (ví dụ: 13×13)
-
-\textbf{2. Bounding Box Prediction:}
-Mỗi grid cell dự đoán $B$ bounding boxes, mỗi box có:
+\paragraph{Đầu ra của mô hình YOLO}
+Mô hình YOLO chia ảnh thành lưới $S \times S$. Mỗi ô lưới dự đoán $B$ bounding boxes. Mỗi box bao gồm tọa độ tâm $(x, y)$, chiều rộng và chiều cao $(w, h)$, cùng độ tin cậy (confidence score) $C$ thể hiện xác suất tồn tại đối tượng và độ chính xác của box đó:
 \begin{equation}
-\text{Box} = (x, y, w, h, \text{confidence})
+C = \text{Pr(Object)} \times \text{IoU}_{\text{pred}}^{\text{truth}}
 \end{equation}
-
-\textbf{3. Confidence Score:}
+Đồng thời, mỗi ô lưới dự đoán phân phối xác suất điều kiện cho các lớp: $\text{Pr(Class}i | \text{Object)}$. Điểm số cuối cùng cho mỗi bounding box và lớp được kết hợp như sau:
 \begin{equation}
-\text{Confidence} = P(\text{Object}) \times \text{IOU}_{\text{pred}}^{\text{truth}}
+\text{Score}{\text{class}} = C \times \text{Pr(Class}_i | \text{Object)}
 \end{equation}
+Các dự đoán đầu ra sẽ được lọc thông qua Ngưỡng Độ Tin Cậy (Confidence Threshold) và thuật toán Ức chế Không cực đại (Non-Maximum Suppression - NMS) để loại bỏ các box trùng lặp, cho ra tập kết quả cuối cùng.
 
-\textbf{4. Class Probability:}
-\begin{equation}
-P(\text{Class}_i | \text{Object}) \times \text{Confidence} = P(\text{Class}_i) \times \text{IOU}_{\text{pred}}^{\text{truth}}
-\end{equation}
+\subsubsection{Các chỉ số đánh giá hiệu năng phát hiện đối tượng}
 
-\textbf{5. Loss Function:}
+\paragraph{Intersection over Union (IoU)}
+IoU đo lường mức độ chồng lấp giữa khung bao dự đoán $B_{\text{pred}}$ và khung bao thực tế (ground truth) $B_{\text{gt}}$:
 \begin{equation}
-\begin{split}
-L = \lambda_{\text{coord}} \sum_{i=0}^{S^2} \sum_{j=0}^{B} \mathbb{1}_{ij}^{\text{obj}} [(x_i - \hat{x}_i)^2 + (y_i - \hat{y}_i)^2] \\
-+ \lambda_{\text{coord}} \sum_{i=0}^{S^2} \sum_{j=0}^{B} \mathbb{1}_{ij}^{\text{obj}} [(\sqrt{w_i} - \sqrt{\hat{w}_i})^2 + (\sqrt{h_i} - \sqrt{\hat{h}_i})^2] \\
-+ \sum_{i=0}^{S^2} \sum_{j=0}^{B} \mathbb{1}_{ij}^{\text{obj}} (C_i - \hat{C}_i)^2 \\
-+ \lambda_{\text{noobj}} \sum_{i=0}^{S^2} \sum_{j=0}^{B} \mathbb{1}_{ij}^{\text{noobj}} (C_i - \hat{C}_i)^2 \\
-+ \sum_{i=0}^{S^2} \mathbb{1}_{i}^{\text{obj}} \sum_{c \in \text{classes}} (p_i(c) - \hat{p}_i(c))^2
-\end{split}
+\text{IoU} = \frac{\text{Area}(B_{\text{pred}} \cap B_{\text{gt}})}{\text{Area}(B_{\text{pred}} \cup B_{\text{gt}})}
 \end{equation}
-trong đó:
+Một dự đoán được coi là \textit{đúng} (True Positive) nếu IoU của nó với một ground truth lớn hơn một ngưỡng xác định (thường là 0.5) và phân loại đúng lớp.
+
+\paragraph{Precision và Recall}
+Dựa trên số lượng True Positive (TP), False Positive (FP) và False Negative (FN), ta tính:
+\begin{align}
+\text{Precision} &= \frac{TP}{TP + FP} \quad \text{(Độ chính xác)} \
+\text{Recall} &= \frac{TP}{TP + FN} \quad \text{(Độ bao phủ)}
+\end{align}
 \begin{itemize}
-    \item $S$ là số ô lưới theo mỗi chiều của ảnh đầu vào;
-    \item $B$ là số bounding box được dự đoán tại mỗi ô lưới;
-    \item $(x_i, y_i, w_i, h_i)$ và $(\hat{x}_i, \hat{y}_i, \hat{w}_i, \hat{h}_i)$
-    lần lượt là tọa độ dự đoán và tọa độ ground truth của bounding box;
-    \item $C_i$ và $\hat{C}_i$ là độ tin cậy (confidence) dự đoán và giá trị thực;
-    \item $p_i(c)$ và $\hat{p}_i(c)$ là xác suất dự đoán và nhãn thực của lớp $c$;
-    \item $\mathbb{1}_{ij}^{\text{obj}}$ là hàm chỉ thị, bằng 1 nếu bounding box $j$
-    tại ô lưới $i$ chứa đối tượng, ngược lại bằng 0;
-    \item $\mathbb{1}_{ij}^{\text{noobj}}$ là hàm chỉ thị cho các ô không chứa đối tượng;
-    \item $\lambda_{\text{coord}}$ và $\lambda_{\text{noobj}}$ là các hệ số cân bằng
-    giữa sai số định vị và sai số độ tin cậy trong quá trình huấn luyện.
+\item \textbf{TP}: Dự đoán có IoU $\ge$ ngưỡng (vd: 0.5) và phân loại đúng.
+\item \textbf{FP}: Dự đoán có IoU $\ge$ ngưỡng nhưng phân loại sai, hoặc IoU $<$ ngưỡng, hoặc là box dư thừa sau NMS.
+\item \textbf{FN}: Đối tượng thật không được phát hiện bởi bất kỳ dự đoán đủ tốt nào.
 \end{itemize}
 
+\paragraph{Đường cong Precision--Recall và Average Precision (AP)}
+Bằng cách thay đổi ngưỡng confidence, ta có thể vẽ đường cong Precision--Recall ($P = f(R)$). Average Precision (AP) cho một lớp là diện tích dưới đường cong này:
+\begin{equation}
+\text{AP} = \int_{0}^{1} P(R), dR \approx \sum_{k=1}^{n} P(k) \Delta R(k)
+\end{equation}
+
+\paragraph{Mean Average Precision (mAP)}
+mAP là chỉ số tổng hợp quan trọng nhất, được tính bằng trung bình AP của tất cả các lớp.
+\begin{itemize}
+\item \textbf{mAP@50}: Sử dụng ngưỡng IoU cố định là 0.5.
+\begin{equation}
+\text{mAP@50} = \frac{1}{N} \sum_{c=1}^{N} \text{AP}c \quad \text{với } \text{IoU} \ge 0.5
+\end{equation}
+\item \textbf{mAP@50:95}: Chỉ số toàn diện hơn, tính trung bình mAP tại các ngưỡng IoU từ 0.5 đến 0.95 với bước nhảy 0.05.
+\begin{equation}
+\text{mAP@50:95} = \frac{1}{10} \sum{k=0}^{9} \text{mAP@}(0.5 + 0.05k)
+\end{equation}
+\end{itemize}
+
+\paragraph{Nhận xét}
+mAP@50:95 là thước đo nghiêm ngặt, đánh giá đồng thời khả năng phân loại và định vị chính xác của mô hình ở nhiều mức độ khắt khe khác nhau. Do đó, nó được xem là chỉ số chính để đánh giá hiệu năng tổng thể của các mô hình phát hiện đối tượng như YOLO. 
 \subsubsection{Ứng dụng trong hệ thống}
 
 Trong hệ thống đề xuất, ba mô hình YOLO được triển khai nhằm phục vụ các
@@ -81,4 +87,8 @@ trên biển số và phát hiện logo phương tiện.
     \item Phiên bản mô hình: YOLOv8;
     \item Tốc độ xử lý: từ 60 đến 140 FPS khi triển khai trên GPU;
     \item Độ chính xác: mAP@0.5 đạt trên 90\%.
+    
+
 \end{itemize}
+
+

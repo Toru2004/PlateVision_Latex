@@ -1,17 +1,17 @@
 \subsection{Công nghệ nhận dạng khuôn mặt (DeepFace)}
 
-DeepFace là kiến trúc mạng nơ-ron tích chập (CNN) sâu được phát triển bởi 
+DeepFace là kiến trúc CNN được phát triển bởi 
 Facebook, đạt độ chính xác 97.35\% trên bộ dữ liệu LFW, gần với khả năng 
 nhận dạng của con người.
 
 Các bước xử lý trong DeepFace:
 \begin{itemize}
-    \item \textbf{Phát hiện khuôn mặt}: Xác định vị trí khuôn mặt trong ảnh đầu vào.
-    \item \textbf{Chuẩn hóa (Alignment)}: Căn chỉnh khuôn mặt về tư thế chuẩn 
+    \item Phát hiện khuôn mặt: Xác định vị trí khuôn mặt trong ảnh đầu vào.
+    \item Chuẩn hóa (Alignment): Căn chỉnh khuôn mặt về tư thế chuẩn 
     dựa trên các điểm đặc trưng.
-    \item \textbf{Trích xuất đặc trưng}: Đưa ảnh qua mạng CNN để tạo vector 
+    \item Trích xuất đặc trưng: Đưa ảnh qua mạng CNN để tạo vector 
     đặc trưng (embedding).
-    \item \textbf{So khớp (Verification)}: Đánh giá độ tương đồng giữa các 
+    \item So khớp (Verification): Đánh giá độ tương đồng giữa các 
     vector đặc trưng.
 \end{itemize}
 
@@ -24,7 +24,7 @@ Các bước xử lý trong DeepFace:
 \end{equation}
 
 Giá trị $\text{sim}(\mathbf{f}_1, \mathbf{f}_2) \in [-1,1]$, giá trị càng 
-lớn thể hiện độ tương đồng càng cao. Việc xác thực được thực hiện bằng cách 
+nhỏ thể hiện độ tương đồng càng cao. Việc xác thực được thực hiện bằng cách 
 so sánh giá trị này với ngưỡng xác định trước.\\
 \textbf{Ứng dụng trong hệ thống bãi đỗ xe máy:}
 \begin{itemize}
@@ -35,10 +35,10 @@ so sánh giá trị này với ngưỡng xác định trước.\\
     \item Khi xe ra bãi, hệ thống chụp lại khuôn mặt người lái hiện tại, trích xuất embedding $\mathbf{f}_{out}$ và tính độ tương đồng giữa hai embedding bằng công thức:
     
     \[
-    \text{sim}(\mathbf{f}_{in}, \mathbf{f}_{out}) > \tau_{face}
+    \text{sim}(\mathbf{f}_{in}, \mathbf{f}_{out}) < \tau_{face}
     \]
     
-    \item Nếu độ tương đồng lớn hơn ngưỡng $\tau_{face}$ (thường $\tau_{face} \geq 0.6$), người lái được xác nhận là chủ xe hợp lệ và cổng sẽ tự động mở.
+    \item Nếu độ tương đồng nhỏ hơn ngưỡng $\tau_{face}$ (thường $\tau_{face} < 0.35$), người lái được xác nhận là chủ xe hợp lệ và cổng sẽ tự động mở.
     
     \item Ngược lại, hệ thống cảnh báo hành vi bất thường và gửi thông báo đến ứng dụng Mobile của chủ xe, giúp phát hiện các trường hợp xe bị trộm hoặc sử dụng trái phép.
 \end{itemize}

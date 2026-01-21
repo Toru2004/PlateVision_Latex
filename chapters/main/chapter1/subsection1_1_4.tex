@@ -1,27 +1,88 @@
 \subsection{Mạng Siamese Network}
 
-Siamese Network là kiến trúc mạng nơ-ron gồm hai nhánh CNN chia sẻ trọng số, 
-được thiết kế để học độ tương đồng giữa hai ảnh đầu vào thông qua khoảng cách 
+Siamese Network là kiến trúc mạng nơ-ron gồm hai nhánh CNN chia sẻ trọng số,
+được thiết kế để học độ tương đồng giữa hai ảnh đầu vào thông qua khoảng cách
 trong không gian đặc trưng.
 
-Hai ảnh đầu vào được đưa qua mạng CNN để trích xuất embedding $\mathbf{f}_1$ 
+\subsubsection{Kiến trúc và hàm mất mát}
+
+Hai ảnh đầu vào $I_1$ và $I_2$ được đưa qua mạng CNN để trích xuất embedding $\mathbf{f}_1$
 và $\mathbf{f}_2$. Khoảng cách Euclid giữa hai embedding được tính:
 \begin{equation}
-d(\mathbf{f}_1, \mathbf{f}_2) = \|\mathbf{f}_1 - \mathbf{f}_2\|_2
+d(\mathbf{f}_1, \mathbf{f}_2) = |\mathbf{f}1 - \mathbf{f}2|2 = \sqrt{\sum{i=1}^n (f{1,i} - f{2,i})^2}
 \end{equation}
 
 Hàm mất mát Contrastive Loss được sử dụng để huấn luyện:
 \begin{equation}
-\mathcal{L}_{contrastive} = y \, d^2 + (1-y)\max(0, m - d)^2
+\mathcal{L}_{contrastive} = y \cdot d^2 + (1-y) \cdot \max(0, m - d)^2
 \end{equation}
 
-trong đó $y \in \{0,1\}$ biểu thị hai mẫu có cùng lớp hay không, 
-$d$ là khoảng cách embedding, và $m$ là margin phân tách các cặp khác lớp.
+trong đó:
+\begin{itemize}
+\item $y \in {0,1}$: nhãn của cặp ảnh ($y=1$ nếu cùng lớp, $y=0$ nếu khác lớp)
+\item $d$: khoảng cách giữa hai embedding từ công thức (1)
+\item $m > 0$: margin - khoảng cách tối thiểu mong muốn giữa các cặp khác lớp
+\end{itemize}
+
+\subsubsection{Các chỉ số đánh giá sau huấn luyện}
+
+\paragraph{Train Loss và Test Loss}
+\begin{equation}
+\text{Train Loss} = \frac{1}{N_{\text{train}}} \sum_{i=1}^{N_{\text{train}}} \mathcal{L}{\text{contrastive}}^{(i)}
+\end{equation}
+\begin{equation}
+\text{Test Loss} = \frac{1}{N{\text{test}}} \sum_{i=1}^{N_{\text{test}}} \mathcal{L}{\text{contrastive}}^{(i)}
+\end{equation}
+trong đó $N{\text{train}}$ và $N_{\text{test}}$ là số cặp ảnh trong tập huấn luyện và kiểm tra.
+
+\paragraph{Test Accuracy}
+Độ chính xác được tính dựa trên ngưỡng khoảng cách $t$:
+\begin{equation}
+\text{Prediction} =
+\begin{cases}
+1 & \text{nếu } d \le t \quad (\text{cùng lớp}) \\
+0 & \text{nếu } d > t \quad (\text{khác lớp})
+\end{cases}
+\end{equation}
+\begin{equation}
+\text{Test Accuracy} = \frac{TP + TN}{TP + TN + FP + FN} = \frac{\text{Số dự đoán đúng}}{N_{\text{test}}} \times 100%
+\end{equation}
+với:
+\begin{itemize}
+\item $TP$: True Positive (dự đoán cùng lớp và đúng)
+\item $TN$: True Negative (dự đoán khác lớp và đúng)
+\item $FP$: False Positive (dự đoán cùng lớp nhưng sai)
+\item $FN$: False Negative (dự đoán khác lớp nhưng sai)
+\end{itemize}
+
+\paragraph{AUC ROC}
+Đường cong ROC (Receiver Operating Characteristic) thể hiện mối quan hệ giữa:
+\begin{equation}
+TPR = \frac{TP}{TP + FN} \quad \text{(True Positive Rate)}
+\end{equation}
+\begin{equation}
+FPR = \frac{FP}{FP + TN} \quad \text{(False Positive Rate)}
+\end{equation}
+
+Diện tích dưới đường cong ROC (AUC ROC) được tính:
+\begin{equation}
+\text{AUC ROC} = \int_{0}^{1} TPR(FPR) , d(FPR)
+\end{equation}
+
+Trong thực tế, AUC ROC được tính xấp xỉ bằng phương pháp hình thang:
+\begin{equation}
+\text{AUC ROC} \approx \sum_{i=1}^{n-1} \frac{(FPR_{i+1} - FPR_i) \cdot (TPR_i + TPR_{i+1})}{2}
+\end{equation}
+với $n$ là số điểm ngưỡng được thử nghiệm.
+
+
 \textbf{Ứng dụng vào hệ thống bãi đỗ xe thông minh:}
 \begin{itemize}
     \item Mạng Siamese Network được huấn luyện trên tập dữ liệu VeRi-776, bao gồm khoảng 32.000 ảnh đầu xe, nhằm phục vụ việc so sánh và xác thực phương tiện khi ra vào bãi đỗ.
-    
+    \item Các tham số của mạng được khởi tạo thông qua một bước tối ưu sơ bộ bằng thuật toán di truyền, sau đó tiếp tục được cập nhật bằng lan truyền ngược với hàm mất mát contrastive.
     \item Khi xe đi vào bãi, hệ thống camera chụp ảnh đầu xe và trích xuất vector đặc trưng (embedding) $\mathbf{f}_{in}$; embedding này được lưu trữ trong cơ sở dữ liệu.
+    
+
     
     \item Khi xe rời khỏi bãi, hệ thống tiếp tục trích xuất embedding $\mathbf{f}_{out}$ từ ảnh đầu xe tại cổng ra và tiến hành so sánh với embedding $\mathbf{f}_{in}$ đã lưu.
     
