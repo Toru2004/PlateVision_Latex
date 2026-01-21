@@ -33,6 +33,8 @@ Tự động hóa quy trình nhận diện và điều khiển barrier, giảm c
 \subsubsection{Khả năng mở rộng}
 \nopagebreak
 Giải pháp có thể áp dụng cho các trường đại học, khu chung cư, tòa nhà văn phòng, bãi đỗ xe công cộng, góp phần vào xu hướng chuyển đổi số và xây dựng đô thị thông minh.
+
+
 \section{Các nội dung nghiên cứu chính của đề tài}
 Đề tài "Bãi đỗ xe thông minh tích hợp AI" tập trung vào việc nghiên cứu, thiết kế và triển khai một hệ thống quản lý bãi đỗ xe hiện đại, sử dụng các công nghệ tiên tiến như nhận diện biển số xe bằng camera, Machine Learning (ML), Internet Vạn Vật (IoT) và Trí tuệ Nhân tạo (AI).
 Mục tiêu chính của đề tài là tối ưu hóa quy trình ra vào bãi đỗ xe, nâng cao tính an toàn, minh bạch và tiện lợi cho người sử dụng.
@@ -47,15 +49,10 @@ Các nội dung nghiên cứu chính của đề tài bao gồm:
     \item \textbf{Chương 1: Cơ sở lý thuyết và tổng quan tài liệu}
     \item 
     \hspace*{1em} Chương này sẽ trình bày tổng quan về đề tài, nêu bật tính cấp thiết của việc xây dựng hệ thống bãi đỗ xe thông minh trong bối cảnh đô thị hóa nhanh chóng, cùng với việc phân tích những hạn chế hiện tại của các bãi giữ xe truyền thống (như sử dụng thẻ từ dễ mất mát hoặc hư hỏng). Nội dung chính bao gồm việc giới thiệu và trình bày các kiến thức nền tảng, công nghệ cốt lõi được ứng dụng, như công nghệ nhận diện bằng camera, Machine learning (ML), Internet Vạn Vật (IoT), cũng như vai trò của Trí tuệ Nhân tạo (AI) trong việc tự động hóa kiểm soát xe. Chương này cũng xác định mục tiêu là xây dựng hệ thống quản lý bãi xe hiện đại, tối ưu quy trình ra vào và nâng cao tính an toàn, minh bạch.
-    \item \textbf{Chương 2: Phân tích yêu cầu và xây dựng mô hình nghiên cứu}
+    \item \textbf{Chương 2: Xây dựng mô hình và kiểm thử hệ thống}
     \item 
-    \hspace*{1em} Chương này tập trung vào việc phân tích yêu cầu nghiệp vụ và đặc điểm kỹ thuật của hệ thống. Nội dung bao gồm việc mô tả tổng quan và chi tiết các quy trình vận hành của bãi đỗ xe thông minh, bao gồm quy trình xe người dùng vào/ra, quy trình xe khách vào/ra, và quy trình cảnh báo khi có sự cố bất thường. Chương cũng phân tích các tác nhân tham gia vào hệ thống (Người dùng, Bảo vệ, Quản trị viên) và mô tả nghiệp vụ của họ, đồng thời xây dựng các sơ đồ Use Case và Functional Decomposition Diagram (FDD) cho ứng dụng mobile (người dùng, bảo vệ) và website (admin).
-    \item \textbf{Chương 3: Thiết kế – Mô phỏng – Thực nghiệm}
-    \item 
-    \hspace*{1em} Chương này mô tả chi tiết quá trình thiết kế hệ thống theo kiến trúc đa tầng, bao gồm tầng thiết bị IoT, tầng xử lý AI, tầng ứng dụng di động/web, và tầng cơ sở dữ liệu. Nội dung bao gồm thiết kế kiến trúc tổng thể, thiết kế chi tiết các giao diện ứng dụng di động (cho người dùng và bảo vệ), giao diện Web Admin, và Desktop App. Đặc biệt, chương trình bày chi tiết về việc thiết kế hệ thống thiết bị IoT (sử dụng ESP32, Arduino, servo SG90, cảm biến rung), bao gồm mô phỏng và triển khai phần cứng thực tế tại trạm ra vào và khu vực phát hiện vị trí trống, cùng với việc trình bày thiết kế cơ sở dữ liệu (sử dụng Firebase và Cloudinary).
-    \item \textbf{Chương 4: Phân tích kết quả và đề xuất giải pháp}
-    \item 
-    \hspace*{1em} Chương này trình bày kết quả kiểm thử các chức năng chính của hệ thống, bao gồm kiểm thử chức năng nhận diện biển số, khuôn mặt (xe máy), so sánh hình ảnh (ô tô bằng mô hình Siamese), kiểm thử cổng tự động (IoT), và kiểm thử thanh toán điện tử VNPAY. Dựa trên kết quả kiểm thử, chương tiến hành đánh giá hiệu năng (tốc độ xử lý hình ảnh, cổng tự động, đồng bộ dữ liệu) và tính ổn định của hệ thống, đồng thời chỉ ra các ưu điểm (tự động hóa, bảo mật đa lớp, tiện lợi) và các hạn chế còn tồn tại (ảnh hưởng bởi môi trường, phụ thuộc internet).
+    \hspace*{1em} Chương này tập trung vào việc thiết kế và xây dựng mô hình hệ thống bãi đỗ xe thông minh, bao gồm các chức năng chính như nhận diện phương tiện thông qua camera (biển số xe, khuôn mặt đối với xe máy, so sánh hình ảnh ô tô bằng mô hình Siamese), điều khiển cổng tự động dựa trên nền tảng IoT và tích hợp thanh toán điện tử VNPAY. Trên cơ sở mô hình đã xây dựng, chương tiến hành kiểm thử hệ thống nhằm đánh giá hiệu năng xử lý, độ ổn định và khả năng đồng bộ dữ liệu, đồng thời phân tích các ưu điểm và những hạn chế còn tồn tại của hệ thống.
+
     \item \textbf{Kết luận và hướng phát triển}
     \item 
     \hspace*{1em} Phần này sẽ tổng kết những thành tựu đã đạt được của đề tài, khẳng định tính khả thi và hiệu quả của mô hình bãi đỗ xe thông minh tích hợp AI. Đồng thời, đề xuất các hướng phát triển trong tương lai nhằm cải thiện độ chính xác của mô hình nhận diện (nâng cấp AI, học liên tục), tối ưu hóa hạ tầng (Edge Computing, chế độ offline-first), nâng cao trải nghiệm người dùng (đặt chỗ trước, thông báo đẩy) và mở rộng quy mô triển khai. Qua đó, đề tài không chỉ đóng góp vào lĩnh vực quản lý bãi đỗ xe mà còn hướng tới xây dựng các giải pháp giao thông thông minh, góp phần phát triển đô thị bền vững trong tương lai.

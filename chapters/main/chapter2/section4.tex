@@ -103,11 +103,11 @@ Kết quả đầu ra của mô-đun ML bao gồm các thông tin nhận diện 
 
 \node[block, below=0.5cm of update] (upload) {Upload ảnh xe vào \\ lên Cloudinary};
 
-\node[block, below=0.5cm of upload] (iot) {Thiết bị IoT nhận tín hiệu \\ và điều khiển mở cổng};
+\node[block, below=0.5cm of upload] (iot) {Nhận tính hiệu và mở cổng};
 
-\node[block, below=0.5cm of iot] (notify) {Mobile App sinh viên cập nhâp trạng};
+\node[block, below=0.5cm of iot] (notify) {Mobile App người dùng cập nhâp trạng thái};
 
-\node[block, below=0.5cm of notify] (guard) {Mobile App bảo vệ và \\ Web Dashboard quan sát};
+\node[block, below=0.5cm of notify] (guard) {Mobile App bảo vệ quan sát};
 
 \node[startstop, right=1.5cm of guard] (end) {Kết thúc};
 
@@ -167,7 +167,7 @@ Thiết bị IoT đang lắng nghe thay đổi trên Realtime Database bắt đ�
 
 % Nodes
 \node[startstop] (start) {Bắt đầu};
-\node[block, below=0.5cm of start] (prepare) {Sinh viên ấn nút \\ "Chuẩn bị rời đi" trên app};
+\node[block, below=0.5cm of start] (prepare) {Người dùng ấn nút \\ "Chuẩn bị rời đi" trên app};
 \node[block, below of=prepare] (arrive) {Xe đến trạm ra};
 \node[block, below of=arrive] (capture) {Camera tự động chụp ảnh};
 \node[block, below of=capture] (ai) {Mô hình AI nhận diện \\ biển số tự động};
@@ -176,19 +176,18 @@ Thiết bị IoT đang lắng nghe thay đổi trên Realtime Database bắt đ�
 
 \node[decision, below=0.5cm of verify] (exist) {Xe có trong \\ bãi đỗ ảo?};
 
-\node[decision, below=0.5cm of exist] (ready) {Có yêu cầu \\ "rời đi" và còn lượt?};
+\node[decision, below=0.5cm of exist] (ready) {Có yêu cầu \\ "rời đi" };
 
-\node[block, below=0.5cm of ready] (update) {Xóa xe khỏi Realtime DB, \\ cập nhật vào Firestore và trừ lượt};
+\node[block, below=0.5cm of ready] (update) {Xóa xe khỏi Realtime DB, \\ cập nhật vào Firestore };
 
 \node[block, below=0.5cm of update] (upload) {Upload ảnh xe ra \\ lên Cloudinary};
 
-\node[block, below=0.5cm of upload] (iot) {Thiết bị IoT nhận tín hiệu \\ và điều khiển mở cổng};
+\node[block, below=0.5cm of upload] (iot) {Nhận tín hiệu để mở cổng};
 
 \node[block, right=7cm of exist] (alert1) {Cảnh báo: \\ Xe không có trong bãi};
 
-\node[block, right=2cm of ready] (alert2) {Cảnh báo tức thì \\ đến Mobile App sinh viên};
-
-\node[block, below=0.5cm of alert2] (guardnotif) {Thông báo đến \\ bảo vệ và admin};
+\node[block, right=2cm of ready] (alert2) {Cảnh báo hành vi bất thường \\ đến Mobile App người dùng};
+\node[block, below=0.5cm of alert2] (guardnotif) {Thông báo đến \\ bảo vệ };
 
 \node[startstop, below right=2cm and 2cm of guardnotif] (end) {Kết thúc};
 
