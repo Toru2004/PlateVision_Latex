@@ -1,5 +1,5 @@
 \subsection{Thuật toán YOLO (You Only Look Once)}
-YOLO (You Only Look Once) là một thuật toán phát hiện đối tượng thời gian thực, trong đó toàn bộ ảnh đầu vào được xử lý chỉ trong một lần lan truyền xuôi (forward pass) của mạng nơ-ron. Nhờ cơ chế dự đoán đồng thời vị trí và nhãn đối tượng, YOLO cho phép đạt tốc độ xử lý cao nhưng vẫn đảm bảo độ chính xác. Hiệu năng của mô hình YOLO sau huấn luyện không được đánh giá qua hàm mất mát mà thông qua các chỉ số định lượng dựa trên sự so sánh giữa dự đoán và ground truth.
+YOLO (You Only Look Once) là một thuật toán phát hiện đối tượng thời gian thực, trong đó toàn bộ ảnh đầu vào được xử lý chỉ trong một lần lan truyền xuôi (forward pass) của mạng neural. Nhờ cơ chế dự đoán đồng thời vị trí và nhãn đối tượng, YOLO cho phép đạt tốc độ xử lý cao nhưng vẫn đảm bảo độ chính xác. Hiệu năng của mô hình YOLO sau huấn luyện không được đánh giá qua hàm mất mát mà thông qua các chỉ số định lượng dựa trên sự so sánh giữa dự đoán và ground truth.
 
 \paragraph{Đầu ra của mô hình YOLO}
 Mô hình YOLO chia ảnh thành lưới $S \times S$. Mỗi ô lưới dự đoán $B$ bounding boxes. Mỗi box bao gồm tọa độ tâm $(x, y)$, chiều rộng và chiều cao $(w, h)$, cùng độ tin cậy (confidence score) $C$ thể hiện xác suất tồn tại đối tượng và độ chính xác của box đó:

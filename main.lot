@@ -5,16 +5,16 @@
 \contentsline {table}{\numberline {2.2}{\ignorespaces So sánh các phương pháp nhận dạng ký tự trên biển số}}{40}{}%
 \contentsline {table}{\numberline {2.3}{\ignorespaces So sánh các phương pháp đối sánh ảnh đầu xe}}{41}{}%
 \contentsline {table}{\numberline {2.4}{\ignorespaces So sánh các phương pháp nhận diện khuôn mặt}}{41}{}%
-\contentsline {table}{\numberline {2.5}{\ignorespaces Kết quả huấn luyện YOLO - Nhận diện biển số}}{46}{}%
-\contentsline {table}{\numberline {2.6}{\ignorespaces Kết quả huấn luyện YOLO - Nhận diện vùng ký tự}}{47}{}%
-\contentsline {table}{\numberline {2.7}{\ignorespaces Kết quả huấn luyện YOLO - Nhận diện logo xe}}{48}{}%
-\contentsline {table}{\numberline {2.8}{\ignorespaces Kết quả huấn luyện CNN - Nhận dạng ký tự}}{50}{}%
-\contentsline {table}{\numberline {2.9}{\ignorespaces Kết quả huấn luyện Siamese Network}}{51}{}%
-\contentsline {table}{\numberline {2.10}{\ignorespaces Kết quả kiểm thử DeepFace qua 30 rounds (threshold = 0.35)}}{52}{}%
-\contentsline {table}{\numberline {2.11}{\ignorespaces So sánh tổng quan hiệu năng các mô hình}}{52}{}%
-\contentsline {table}{\numberline {2.12}{\ignorespaces Tiêu chí đánh giá định lượng cho AI models}}{53}{}%
-\contentsline {table}{\numberline {2.13}{\ignorespaces Tiêu chí đánh giá Module Camera quét cổng ra/vào}}{54}{}%
-\contentsline {table}{\numberline {2.14}{\ignorespaces Tiêu chí đánh giá Module quản lý bãi đỗ}}{54}{}%
-\contentsline {table}{\numberline {2.15}{\ignorespaces Tiêu chí đánh giá Module Mobile Application}}{54}{}%
-\contentsline {table}{\numberline {2.16}{\ignorespaces Tiêu chí đánh giá Module IoT Hardware}}{55}{}%
+\contentsline {table}{\numberline {2.5}{\ignorespaces Kết quả huấn luyện YOLO - Nhận diện biển số}}{47}{}%
+\contentsline {table}{\numberline {2.6}{\ignorespaces Kết quả huấn luyện YOLO - Nhận diện vùng ký tự}}{48}{}%
+\contentsline {table}{\numberline {2.7}{\ignorespaces Kết quả huấn luyện YOLO - Nhận diện logo xe}}{49}{}%
+\contentsline {table}{\numberline {2.8}{\ignorespaces Kết quả huấn luyện CNN - Nhận dạng ký tự}}{51}{}%
+\contentsline {table}{\numberline {2.9}{\ignorespaces Kết quả huấn luyện Siamese Network}}{52}{}%
+\contentsline {table}{\numberline {2.10}{\ignorespaces Kết quả kiểm thử DeepFace qua 30 rounds (threshold = 0.35)}}{53}{}%
+\contentsline {table}{\numberline {2.11}{\ignorespaces So sánh tổng quan hiệu năng các mô hình}}{53}{}%
+\contentsline {table}{\numberline {2.12}{\ignorespaces Tiêu chí đánh giá định lượng cho AI models}}{54}{}%
+\contentsline {table}{\numberline {2.13}{\ignorespaces Tiêu chí đánh giá Module Camera quét cổng ra/vào}}{55}{}%
+\contentsline {table}{\numberline {2.14}{\ignorespaces Tiêu chí đánh giá Module quản lý bãi đỗ}}{55}{}%
+\contentsline {table}{\numberline {2.15}{\ignorespaces Tiêu chí đánh giá Module Mobile Application}}{56}{}%
+\contentsline {table}{\numberline {2.16}{\ignorespaces Tiêu chí đánh giá Module IoT Hardware}}{56}{}%
 \addvspace {10\p@ }

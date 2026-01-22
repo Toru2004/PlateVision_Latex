@@ -52,7 +52,7 @@ Sau khi vùng biển số được xác định, ảnh biển số được cắ
 
 Kết quả nhận dạng của từng ký tự được tổng hợp theo đúng thứ tự xuất hiện trên biển số, từ đó tạo thành chuỗi ký tự đại diện cho biển số phương tiện. Chuỗi kết quả này được sử dụng để truy vấn và xác thực thông tin phương tiện trong hệ thống cơ sở dữ liệu Firebase, phục vụ cho các quyết định điều khiển cổng và ghi nhận thông tin vào Realtime Database cũng như Firestore.
 
-Đối với trường hợp \textit{nhận diện xe và logo} tại cổng ô tô, mô-đun ML sử dụng mô hình phát hiện đối tượng để xác định vùng mặt trước phương tiện và vị trí logo hãng xe. Các vùng ảnh này sau đó được đưa vào mô hình mạng nơ-ron Siamese đã được huấn luyện để trích xuất và so khớp đặc trưng hình ảnh của phương tiện. 
+Đối với trường hợp \textit{nhận diện xe và logo} tại cổng ô tô, mô-đun ML sử dụng mô hình phát hiện đối tượng để xác định vùng mặt trước phương tiện và vị trí logo hãng xe. Các vùng ảnh này sau đó được đưa vào mô hình mạng neural Siamese đã được huấn luyện để trích xuất và so khớp đặc trưng hình ảnh của phương tiện. 
 
 Đối với trường hợp \textit{nhận diện khuôn mặt} tại cổng xe máy, mô-đun ML tiến hành phát hiện khuôn mặt người điều khiển phương tiện, sau đó trích xuất đặc trưng khuôn mặt để so sánh với dữ liệu đã được đăng ký trước đó trong hệ thống. Kết quả so khớp được sử dụng như một yếu tố xác thực bổ sung, hỗ trợ kiểm soát truy cập và giảm thiểu nguy cơ sử dụng phương tiện trái phép.
 
@@ -490,7 +490,7 @@ Hệ thống cũng lưu trữ các thông báo đã gửi đến người dùng 
 
 \subsection{Mô hình AI/ML}
 
-Mô hình học máy trong hệ thống được đề xuất nhằm tự động hóa việc nhận diện và xác thực phương tiện tại trạm ra/vào bãi đỗ xe. Hệ thống tích hợp nhiều mô hình học sâu chuyên biệt để xử lý các loại phương tiện khác nhau, đảm bảo độ chính xác cao và khả năng vận hành ổn định trong môi trường thực tế.
+Mô hình học máy trong hệ thống được đề xuất nhằm tự động hóa việc nhận diện và xác thực phương tiện tại trạm ra/vào bãi đỗ xe. Hệ thống tích hợp nhiều Deep Learning chuyên biệt để xử lý các loại phương tiện khác nhau, đảm bảo độ chính xác cao và khả năng vận hành ổn định trong môi trường thực tế.
 
 \textbf{Nhận diện biển số xe} là chức năng cốt lõi được áp dụng cho mọi loại phương tiện. Quy trình xử lý bắt đầu bằng bước tiền xử lý hình ảnh, trong đó ảnh đầu vào từ camera được chuẩn hóa về kích thước phù hợp, điều chỉnh độ sáng và giảm nhiễu để tăng độ ổn định cho các bước tiếp theo.
 
@@ -498,9 +498,9 @@ Hệ thống sử dụng mô hình YOLOv8  để phát hiện và định vị v
 
 Ảnh biển số sau khi cắt được đưa vào module nhận dạng ký tự. Hệ thống thực hiện phân tách biển số thành các vùng ký tự riêng lẻ dựa trên phân tích hình thái và vị trí. Mỗi ký tự được đưa vào một mô hình CNN do nhóm nghiên cứu tự xây dựng và huấn luyện. Mô hình CNN này học các đặc trưng hình ảnh của ký tự Việt Nam (bao gồm chữ số, chữ cái) để thực hiện phân loại chính xác. Kết quả nhận dạng của từng ký tự được tổng hợp theo thứ tự xuất hiện, tạo thành chuỗi văn bản hoàn chỉnh đại diện cho biển số phương tiện.
 
-\textbf{Nhận diện ô tô} được thực hiện thông qua mô hình mạng nơ-ron Siamese nhằm xác thực phương tiện dựa trên đặc trưng hình ảnh. Trong quá trình vận hành thực tế, hệ thống sử dụng YOLOv8 để phát hiện và định vị vùng xe ô tô trong khung hình, sau đó cắt vùng ảnh này ra để làm đầu vào cho mô hình Siamese. Việc cắt ảnh theo vùng xe giúp loại bỏ nền và các yếu tố nhiễu, cho phép mô hình Siamese tập trung vào đặc trưng của phương tiện và đạt hiệu suất tốt hơn.
+\textbf{Nhận diện ô tô} được thực hiện thông qua mô hình mạng neural Siamese nhằm xác thực phương tiện dựa trên đặc trưng hình ảnh. Trong quá trình vận hành thực tế, hệ thống sử dụng YOLOv8 để phát hiện và định vị vùng xe ô tô trong khung hình, sau đó cắt vùng ảnh này ra để làm đầu vào cho mô hình Siamese. Việc cắt ảnh theo vùng xe giúp loại bỏ nền và các yếu tố nhiễu, cho phép mô hình Siamese tập trung vào đặc trưng của phương tiện và đạt hiệu suất tốt hơn.
 
-Mô hình Siamese được huấn luyện để học cách so sánh hai ảnh xe và xác định chúng có phải cùng một phương tiện hay không. Trong giai đoạn huấn luyện, mô hình học trực tiếp từ ảnh xe đầy đủ mà không cần bước phát hiện và cắt ảnh. Khi triển khai thực tế, mô hình chiều từ ảnh xe đã cắt, sau đó so sánh vector này với các vector đặc trưng đã lưu trong Firestore khi người dùng đăng ký xe. Kết quả so sánh cho ra điểm tương đồng (similarity score), hệ thống sử dụng ngưỡng để quyết định xe có khớp hay không.
+Mô hình Siamese được huấn luyện để học cách so sánh hai ảnh xe và xác định chúng có phải cùng một phương tiện hay không. Trong giai đoạn huấn luyện, mô hình học trực tiếp từ ảnh xe đầy đủ mà không cần bước phát hiện và cắt ảnh. Khi triển khai thực tế, mô hình trích xuất đặc trưng từ ảnh xe đã cắt, sau đó so sánh vector này với các vector đặc trưng đã lưu trong Firestore khi người dùng đăng ký xe. Kết quả so sánh cho ra điểm tương đồng (similarity score), hệ thống sử dụng ngưỡng để quyết định xe có khớp hay không.
 
 \textbf{Nhận diện khuôn mặt người điều khiển xe máy} được thực hiện thông qua thư viện DeepFace, một framework học sâu chuyên biệt cho nhận dạng khuôn mặt. DeepFace tích hợp nhiều mô hình tiên tiến và cung cấp các chức năng hoàn chỉnh từ phát hiện khuôn mặt, căn chỉnh, đến trích xuất đặc trưng và so khớp.
 
@@ -582,4 +582,4 @@ HOG + SVM & Kém & Trung bình & Không đủ bền vững với góc nghiêng, 
 \end{table}
 
 
-Từ các phân tích so sánh trên có thể thấy rằng, các phương pháp truyền thống hoặc các mô hình đơn giản tuy có ưu điểm về mặt triển khai và chi phí tính toán, nhưng không đáp ứng được yêu cầu về độ chính xác, độ bền vững và khả năng thích nghi trong môi trường triển khai thực tế. Do đó, việc lựa chọn các mô hình học sâu chuyên biệt như YOLO, CNN, Siamese Network và DeepFace nhằm nâng cao hiệu năng, mà còn là một yêu cầu mang tính tất yếu để đảm bảo tính khả thi và độ tin cậy của hệ thống trong ứng dụng quản lý bãi đỗ xe thông minh.
+Từ các phân tích so sánh trên có thể thấy rằng, các phương pháp truyền thống hoặc các mô hình đơn giản tuy có ưu điểm về mặt triển khai và chi phí tính toán, nhưng không đáp ứng được yêu cầu về độ chính xác, độ bền vững và khả năng thích nghi trong môi trường triển khai thực tế. Do đó, việc lựa chọn các Deep Learning chuyên biệt như YOLO, CNN, Siamese Network và DeepFace nhằm nâng cao hiệu năng, mà còn là một yêu cầu mang tính tất yếu để đảm bảo tính khả thi và độ tin cậy của hệ thống trong ứng dụng quản lý bãi đỗ xe thông minh.

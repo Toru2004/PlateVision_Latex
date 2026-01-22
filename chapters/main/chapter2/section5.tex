@@ -10,11 +10,11 @@ Module hoạt động theo luồng xử lý phân nhánh dựa trên loại phư
 
 \textbf{Giai đoạn 1: Nhận diện biển số (chung cho cả xe máy và ô tô)}
 \begin{itemize}
-    \item Thu nhận hình ảnh từ camera giám sát tại cổng vào/ra
-    \item Phát hiện vùng chứa biển số bằng mô hình YOLOv8 (License Plate Detection)
-    \item Phát hiện vùng ký tự trên biển số bằng mô hình YOLOv8 (Character Region Detection)
-    \item Nhận dạng từng ký tự bằng mô hình CNN (Character Recognition)
-    \item Tổng hợp chuỗi ký tự thành biển số hoàn chỉnh với độ tin cậy
+    \item Thu nhận hình ảnh từ camera giám sát tại cổng vào/ra;
+    \item Phát hiện vùng chứa biển số bằng mô hình YOLOv8 (License Plate Detection);
+    \item Phát hiện vùng ký tự trên biển số bằng mô hình YOLOv8 (Character Region Detection);
+    \item Nhận dạng từng ký tự bằng mô hình CNN (Character Recognition);
+    \item Tổng hợp chuỗi ký tự thành biển số hoàn chỉnh kèm theo độ tin cậy.
 \end{itemize}
 
 \textbf{Giai đoạn 2: Xác thực phương tiện (phân nhánh theo loại xe)}
@@ -23,20 +23,19 @@ Module hoạt động theo luồng xử lý phân nhánh dựa trên loại phư
 \begin{itemize}
     \item \textbf{Khi xe vào:}
     \begin{itemize}
-        \item Chụp ảnh khuôn mặt người lái xe từ camera
-        \item Trích xuất embedding khuôn mặt bằng DeepFace (VGG-Face backend)
-        \item Lưu trữ embedding cùng với biển số và timestamp vào database
+        \item Chụp ảnh khuôn mặt người lái xe;
+        \item Trích xuất embedding khuôn mặt bằng DeepFace (VGG-Face backend);
+        \item Lưu trữ embedding cùng biển số và thời gian vào hệ thống cơ sở dữ liệu.
     \end{itemize}
     
     \item \textbf{Khi xe ra:}
     \begin{itemize}
-        \item Chụp ảnh khuôn mặt người lái hiện tại
-        \item Trích xuất embedding khuôn mặt mới
-        \item Truy xuất embedding đã lưu từ database dựa trên biển số
-        \item So sánh hai embedding bằng Cosine Similarity với threshold = 0.35
-        \item Xác nhận: Nếu similarity > threshold → Cùng người lái → Cho phép ra
-        \item Cảnh báo: Nếu similarity $\le$ threshold $\rightarrow$ Khác người lái $\rightarrow$ Gửi cảnh báo
-
+        \item Chụp ảnh khuôn mặt người lái hiện tại;
+        \item Trích xuất embedding khuôn mặt mới;
+        \item Truy xuất embedding đã lưu dựa trên biển số;
+        \item So sánh hai embedding bằng Cosine Similarity với ngưỡng $threshold = 0.35$;
+        \item Nếu similarity $>$ threshold $\rightarrow$ cho phép xe ra;
+        \item Ngược lại $\rightarrow$ kích hoạt cơ chế cảnh báo.
     \end{itemize}
 \end{itemize}
 
@@ -44,43 +43,74 @@ Module hoạt động theo luồng xử lý phân nhánh dựa trên loại phư
 \begin{itemize}
     \item \textbf{Khi xe vào:}
     \begin{itemize}
-        \item Nhận diện logo xe bằng mô hình YOLOv8 (Logo Detection)
-        \item Chụp ảnh toàn cảnh đầu xe (góc chính diện)
-        \item Trích xuất feature vector từ ảnh đầu xe bằng Siamese Network (ResNet50 backbone)
-        \item Lưu trữ: logo, feature vector, ảnh đầu xe, biển số, timestamp vào database
+        \item Nhận diện logo xe bằng mô hình YOLOv8;
+        \item Chụp ảnh toàn cảnh đầu xe;
+        \item Trích xuất vector đặc trưng bằng Siamese Network (ResNet50 backbone);
+        \item Lưu trữ logo, vector đặc trưng, ảnh đầu xe, biển số và thời gian.
     \end{itemize}
     
     \item \textbf{Khi xe ra:}
     \begin{itemize}
-        \item Nhận diện logo xe hiện tại
-        \item Chụp ảnh đầu xe hiện tại
-        \item Trích xuất feature vector mới từ ảnh đầu xe
-        \item Truy xuất thông tin đã lưu từ database dựa trên biển số
-        \item \textbf{Bước 1 - So sánh logo:} Kiểm tra logo hiện tại có khớp với logo đã lưu
-        \item \textbf{Bước 2 - So sánh đầu xe:} Tính khoảng cách Euclidean giữa hai feature vectors
-        \item Xác nhận: Nếu logo khớp VÀ distance < threshold → Cùng xe → Cho phép ra
-        \item Cảnh báo: Nếu logo khác HOẶC distance $\ge$ threshold $\rightarrow$ Khác xe $\rightarrow$ Gửi cảnh báo
-
+        \item Nhận diện logo xe hiện tại;
+        \item Trích xuất vector đặc trưng mới;
+        \item Truy xuất dữ liệu đã lưu theo biển số;
+        \item So sánh logo và tính khoảng cách Euclidean giữa hai vector;
+        \item Nếu logo khớp và khoảng cách nhỏ hơn ngưỡng $\rightarrow$ cho phép xe ra;
+        \item Ngược lại $\rightarrow$ gửi cảnh báo an ninh.
     \end{itemize}
 \end{itemize}
 
 \subsection{Module quản lý bãi đỗ}
-Module quản lý bãi đỗ chịu trách nhiệm điều phối toàn bộ hoạt động trong bãi xe, bao gồm quản lý vị trí đỗ, trạng thái chỗ trống, lịch sử ra/vào và thông tin phương tiện. Module này đóng vai trò trung tâm trong việc tổng hợp và xử lý dữ liệu từ các module nhận diện.
 
-Dữ liệu được lưu trữ trong cơ sở dữ liệu tập trung, hỗ trợ các thao tác truy vấn, thống kê và báo cáo. Module cho phép cấu hình số lượng khu vực, số chỗ đỗ, cũng như các quy tắc vận hành (thời gian đỗ tối đa, cảnh báo quá hạn).
+Module quản lý bãi đỗ chịu trách nhiệm điều phối toàn bộ hoạt động của hệ thống, bao gồm quản lý vị trí đỗ, trạng thái chỗ trống, lịch sử ra/vào và thông tin phương tiện. Module này đóng vai trò trung tâm trong việc tổng hợp dữ liệu từ các module nhận diện và IoT.
 
-Ngoài ra, module còn cung cấp các API để web admin và ứng dụng mobile có thể truy cập, theo dõi tình trạng bãi xe theo thời gian thực.
+Dữ liệu được lưu trữ trong cơ sở dữ liệu tập trung, hỗ trợ truy vấn, thống kê và xuất báo cáo. Ngoài ra, module cung cấp các API để web quản trị và ứng dụng mobile theo dõi tình trạng bãi đỗ theo thời gian thực.
 
 \subsection{Ứng dụng mobile}
-Ứng dụng mobile được phát triển nhằm cung cấp giao diện tương tác trực tiếp cho người dùng cuối. Thông qua ứng dụng, người dùng có thể đăng ký tài khoản, quản lý thông tin cá nhân, đăng ký phương tiện và theo dõi trạng thái xe trong bãi đỗ.
 
-Ứng dụng hỗ trợ nhận thông báo thời gian thực (push notification) về các sự kiện quan trọng như xe vào/ra bãi, sắp hết thời gian đỗ hoặc phát hiện bất thường. Giao diện được thiết kế theo hướng thân thiện, dễ sử dụng và phù hợp với nhiều đối tượng người dùng.
+Ứng dụng mobile được phát triển nhằm cung cấp giao diện tương tác trực tiếp cho người dùng cuối. Thông qua ứng dụng, người dùng có thể đăng ký tài khoản, quản lý phương tiện, theo dõi trạng thái xe và nhận thông báo thời gian thực về các sự kiện ra/vào hoặc bất thường.
 
-Về mặt kỹ thuật, ứng dụng mobile giao tiếp với hệ thống backend thông qua các API bảo mật, đảm bảo tính toàn vẹn và an toàn của dữ liệu.
+Ứng dụng giao tiếp với backend thông qua các API bảo mật, đảm bảo an toàn và toàn vẹn dữ liệu.
+
 \subsection{Module mô phỏng phần cứng IoT}
-Module mô phỏng phần cứng IoT được xây dựng để mô phỏng hoạt động của các thiết bị cảm biến và vi điều khiển trong môi trường thực tế. Module này chịu trách nhiệm nhận dữ liệu từ firebase để điều khiển các thiết bị mô phỏng như đèn báo, cổng tự động.
+
+Module mô phỏng phần cứng IoT được xây dựng nhằm tái hiện hoạt động của các thiết bị IoT trong bãi đỗ xe thông minh, trong điều kiện nghiên cứu và thử nghiệm với chi phí thấp.
+
+\subsubsection{Vai trò của lớp thiết bị IoT trong hệ thống}
+
+Lớp thiết bị IoT đảm nhiệm các chức năng:
+\begin{itemize}
+    \item Thu thập dữ liệu từ các cảm biến;
+    \item Nhận lệnh điều khiển từ hệ thống trung tâm;
+    \item Thực thi hành động vật lý và phản hồi trạng thái hoạt động.
+\end{itemize}
+
+\subsubsection{Lý do lựa chọn ESP32 để mô phỏng}
+
+ESP32 được lựa chọn do có đầy đủ các đặc tính tương đồng với thiết bị IoT công nghiệp như khả năng kết nối mạng, xử lý thời gian thực và điều khiển ngoại vi. Việc sử dụng ESP32 giúp mô phỏng chính xác hành vi của hệ thống thực tế trong khi vẫn phù hợp với điều kiện nghiên cứu.
+
+\subsubsection{Mô phỏng thiết bị công nghiệp}
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Linh kiện} & \textbf{Thiết bị công nghiệp đại diện} \\
+\hline
+Servo SG90 & Barie tự động \\
+LCD & Bảng hiển thị thông tin \\
+Cảm biến rung & Cảm biến va chạm \\
+Còi & Hệ thống cảnh báo \\
+Button & Nút khẩn cấp \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Phân tách xử lý AI và IoT}
+
+Do hạn chế về tài nguyên tính toán của vi điều khiển, các mô hình deep learning không được triển khai trực tiếp trên ESP32 mà được xử lý tại server trung tâm. Thiết bị IoT chỉ đảm nhận vai trò thu thập dữ liệu và thực thi quyết định điều khiển, phù hợp với kiến trúc AIoT trong thực tế.
 
 \subsection{Tích hợp các module}
-Các module trong hệ thống được tích hợp theo kiến trúc phân lấy firebase là trung tâm đồng bộ, trong đó mỗi module đảm nhiệm một chức năng riêng biệt nhưng có khả năng phối hợp chặt chẽ với nhau. 
 
-Thiết kế tích hợp này giúp hệ thống hoạt động linh hoạt, dễ dàng nâng cấp từng module riêng lẻ mà không ảnh hưởng đến toàn bộ kiến trúc.
+Các module trong hệ thống được tích hợp theo kiến trúc phân tán, trong đó Firebase đóng vai trò trung tâm đồng bộ dữ liệu. Mỗi module đảm nhiệm một chức năng riêng biệt nhưng có khả năng phối hợp chặt chẽ thông qua các API và cơ chế đồng bộ thời gian thực.
+
+Thiết kế này giúp hệ thống linh hoạt, dễ mở rộng và cho phép thay thế hoặc nâng cấp từng module mà không ảnh hưởng đến toàn bộ kiến trúc.

@@ -308,7 +308,7 @@ Epoch & Train Loss & Test Loss & Test Acc (\%) & Test AUC-ROC \\
 
 \textbf{Phân tích kết quả:} DeepFace với VGG-Face backbone đạt độ chính xác cao (97.93\%) với độ lệch chuẩn thấp (0.28\%), chứng tỏ tính ổn định. Threshold 0.35 được chọn sau khi tối ưu hóa để cân bằng giữa FPR và FNR. Kết quả này tương đương với các hệ thống face recognition thương mại hiện đại.
 
-\subsection{Tổng kết kết quả huấn luyện}
+\subsection{Tổng kết kết quả huấn luyện và ràng buộc IoT}
 
 \begin{table}[H]
 \caption{So sánh tổng quan hiệu năng các mô hình}
@@ -334,6 +334,25 @@ DeepFace & 97.93\% & N/A (pretrained) & 548 MB & Đạt \\
 \end{table}
 
 Tất cả các mô hình đều đạt hoặc vượt ngưỡng accuracy tối thiểu 90\% đề ra ban đầu. Các kết quả training cho thấy hệ thống AI đã sẵn sàng để triển khai vào môi trường production.
+\textbf{Ràng buộc triển khai trong kiến trúc AIoT:}
+
+Mặc dù các mô hình deep learning trong hệ thống đạt độ chính xác cao, việc triển khai
+trực tiếp các mô hình này trên thiết bị IoT là không khả thi do hạn chế về tài nguyên
+tính toán, bộ nhớ và năng lượng. Trong kiến trúc hệ thống đề xuất, các thiết bị IoT
+tại cổng ra/vào (sử dụng ESP32, servo motor và các cảm biến) chỉ đảm nhiệm vai trò
+thu thập dữ liệu, nhận kết quả xác thực và thực thi lệnh điều khiển.
+
+Toàn bộ quá trình suy luận (inference) của các mô hình AI, bao gồm nhận diện biển số,
+nhận diện khuôn mặt, nhận diện logo và so khớp đầu xe, được thực hiện tại server trung
+tâm có năng lực tính toán cao. Kết quả xử lý sau đó được truyền về thiết bị IoT thông
+qua hệ thống đồng bộ thời gian thực để điều khiển các cơ cấu chấp hành như barrier,
+đèn báo và còi cảnh báo.
+
+Cách tiếp cận phân tách xử lý giữa AI server và lớp thiết bị IoT giúp hệ thống đảm bảo
+độ chính xác cao của các Deep Learning, đồng thời phù hợp với điều kiện triển khai
+thực tế của các hệ thống IoT quy mô lớn. Kiến trúc này phản ánh đúng bản chất của
+các hệ thống AIoT hiện đại, trong đó thiết bị IoT đóng vai trò sensing và acting,
+còn các tác vụ tính toán phức tạp được xử lý tập trung tại tầng server.
 
 \section{Tiêu chí đánh giá và phương pháp kiểm định}
 
