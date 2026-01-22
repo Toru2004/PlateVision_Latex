@@ -604,21 +604,6 @@ Việc tích hợp đa mô hình AI vào hệ thống trạm ra/vào bãi đỗ 
 \subsection{Phân tích so sánh và tính cấp thiết của mô hình đề xuất}
 Trong quá trình thiết kế hệ thống, việc lựa chọn kiến trúc và mô hình học máy không chỉ dựa trên độ chính xác lý thuyết mà còn phải xét đến khả năng thích nghi với dữ liệu thực tế, độ ổn định khi triển khai và khả năng mở rộng hệ thống trong tương lai. Do đó, để làm rõ tính hợp lý cũng như tính cấp thiết của mô hình được đề xuất, nghiên cứu này tiến hành phân tích so sánh định tính giữa phương pháp đề xuất và các hướng tiếp cận truyền thống hoặc đơn giản hơn đã được sử dụng phổ biến trong các hệ thống trước đây.
 
-\begin{table}[H]
-\centering
-\caption{So sánh các phương pháp phát hiện biển số, vùng ký tự và logo xe}
-\begin{tabular}{|p{3.8cm}|p{3.2cm}|p{3.2cm}|p{5.5cm}|}
-\hline
-\textbf{Phương pháp} & \textbf{Đặc trưng sử dụng} & \textbf{Mức độ thích nghi dữ liệu thực} & \textbf{Đánh giá trong bối cảnh bài toán} \\
-\hline
-HOG + SVM & Đặc trưng thủ công & Thấp & Không đủ khả năng phát hiện vật thể nhỏ, nhiều đối tượng đồng thời và trong bối cảnh phức tạp \\
-\hline
-SSD-MobileNet & Học sâu & Trung bình & Tốc độ tốt nhưng độ chính xác giảm mạnh với biển số và logo kích thước nhỏ \\
-\hline
-\textbf{YOLO (đề xuất)} & \textbf{Học sâu đa tỉ lệ} & \textbf{Cao} & \textbf{Có khả năng phát hiện đồng thời nhiều đối tượng ở nhiều tỉ lệ khác nhau trong thời gian thực, phù hợp với dữ liệu camera giám sát ngoài trời} \\
-\hline
-\end{tabular}
-\end{table}
 
 \begin{table}[H]
 \centering
@@ -627,15 +612,45 @@ SSD-MobileNet & Học sâu & Trung bình & Tốc độ tốt nhưng độ chính
 \hline
 \textbf{Phương pháp} & \textbf{Cách tiếp cận} & \textbf{Khả năng thích nghi biến dạng} & \textbf{Đánh giá trong bối cảnh bài toán} \\
 \hline
-Tesseract OCR & OCR truyền thống dựa trên đặc trưng và luật & Kém & Hoạt động tốt với ảnh văn bản rõ nét, nền sạch; tuy nhiên hiệu quả thấp đối với ảnh biển số có nhiễu, mờ, nghiêng hoặc độ phân giải thấp \\
-\hline
 EasyOCR & OCR dựa trên deep learning tổng quát & Trung bình & Có khả năng nhận dạng văn bản trong nhiều ngữ cảnh, nhưng không được tối ưu riêng cho biển số, độ chính xác giảm khi ký tự nhỏ, mờ hoặc dính liền \\
 \hline
 \textbf{CNN (đề xuất)} & \textbf{Học đặc trưng tự động, huấn luyện chuyên biệt} & \textbf{Tốt} & \textbf{Được huấn luyện trực tiếp trên dữ liệu biển số, có khả năng học các biến dạng, mờ, vỡ nét, giúp đạt độ chính xác cao hơn trong môi trường không kiểm soát} \\
 \hline
 \end{tabular}
 \end{table}
+Dưới đây là bảng so sánh định tính giữa phương pháp đề xuất và các phương pháp truyền thống trong nhận dạng ký tự trên biển số xe.
 
+\begin{table}[H]
+\centering
+\caption{So sánh kết quả nhận dạng giữa CNN OCR và EasyOCR}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{STT} & \textbf{Ảnh} & \textbf{CNN OCR} & \textbf{Đánh giá} & \textbf{EasyOCR} & \textbf{Đánh giá} \\
+\hline
+1  & 67AK22129.jpg & 67AK22129 & Đúng & 26271A2K9 & Sai \\ \hline
+2  & 63AC16019.jpg & 63AC16019 & Đúng & 6630A1C9 & Sai \\ \hline
+3  & 86AE02258.jpg & 86AE02258 & Đúng & 67A5E8 & Sai \\ \hline
+4  & 70B194176.jpg & 70B194176 & Đúng & 701B716 & Sai \\ \hline
+5  & 77AF08864.jpg & 77AF08864 & Đúng & 878A6 & Sai \\ \hline
+6  & 62K155126.jpg & 62K155126 & Đúng & 62K1 & Sai \\ \hline
+7  & 62AP09936.jpg & 62AP09936 & Đúng & 06929A3P6 & Sai \\ \hline
+8  & 60YT6240.jpg & 66024Y01 & Sai & 60YT6240 & Đúng \\ \hline
+9  & 59GA21257.jpg & 25192G5A7 & Sai & 59GA21257 & Đúng \\ \hline
+10 & 66FA16301.jpg & 16663F0A1 & Sai & 66FA16301 & Đúng \\ \hline
+11 & 77H160392.jpg & 77H160392 & Đúng & 70B194176 & Sai \\ \hline
+12 & 50N23419.jpg & 50N829 & Sai & 50N234189 & Sai \\ \hline
+13 & 63B56396.jpg & 66339B554 & Sai & 63B563956 & Sai \\ \hline
+14 & 76X59158.jpg & 76X59158 & Đúng & 7615X85 & Sai \\ \hline
+15 & 79H108261.jpg & 79H108261 & Đúng & 9H108261791 & Sai \\ \hline
+16 & 68KA17220.jpg & 06930A2H9 & Sai & 6KA1220 & Sai \\ \hline
+17 & 62AP09936.jpg & 06929A3P6 & Sai & 62AP09936 & Đúng \\ \hline
+18 & 67AH02328.jpg & 67AH02328 & Đúng & 936116461 & Sai \\ \hline
+19 & 71AG00241.jpg & 712AG1 & Sai & 71AG00241 & Đúng \\ \hline
+20 & 59GA21257.jpg & 59GA21257 & Đúng & 25192G5A7 & Sai \\ \hline
+\end{tabular}
+\end{table}
+
+\textbf{Đánh giá tổng hợp:} Trên tập 20 ảnh kiểm thử, mô hình CNN OCR nhận dạng đúng 12 ảnh, tương ứng độ chính xác đạt 60\%, trong khi EasyOCR chỉ nhận dạng đúng 5 ảnh, tương ứng độ chính xác 25\%. Kết quả này cho thấy mô hình CNN được huấn luyện chuyên biệt cho bài toán biển số xe có hiệu năng vượt trội so với phương pháp OCR tổng quát EasyOCR trong bối cảnh dữ liệu thực tế phức tạp.
 
 \begin{table}[H]
 \centering
@@ -650,20 +665,14 @@ ResNet + Cosine & So sánh đặc trưng tĩnh & Trung bình & Không tối ưu 
 \hline
 \end{tabular}
 \end{table}
-\begin{table}[H]
-\centering
-\caption{So sánh các phương pháp nhận diện khuôn mặt}
-\begin{tabular}{|p{3.8cm}|p{3.2cm}|p{3.2cm}|p{5.2cm}|}
-\hline
-\textbf{Phương pháp} & \textbf{Khả năng chịu biến thiên} & \textbf{Độ ổn định thực tế} & \textbf{Đánh giá trong bối cảnh bài toán} \\
+Dưới đây là bảng so sánh định tính giữa phương pháp đề xuất và các phương pháp truyền thống trong so sánh 2 ảnh đầu xe ô tô:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{graphics/main/chapter2/siamese.jpg}
+    \caption{Hình so sánh kết quả nhận dạng giữa ResNet và Siamese Network}
+    \label{fig:siamese}
+\end{figure}
 
-\hline
-HOG + SVM & Kém & Trung bình & Không đủ bền vững với góc nghiêng, che mặt và ánh sáng yếu \\
-\hline
-\textbf{DeepFace (đề xuất)} & \textbf{Tốt} & \textbf{Cao} & \textbf{Đã được chứng minh hiệu quả trong môi trường không kiểm soát như camera giám sát} \\
-\hline
-\end{tabular}
-\end{table}
 
 
 Từ các phân tích so sánh trên có thể thấy rằng, các phương pháp truyền thống hoặc các mô hình đơn giản tuy có ưu điểm về mặt triển khai và chi phí tính toán, nhưng không đáp ứng được yêu cầu về độ chính xác, độ bền vững và khả năng thích nghi trong môi trường triển khai thực tế. Do đó, việc lựa chọn các Deep Learning chuyên biệt như YOLO, CNN, Siamese Network và DeepFace nhằm nâng cao hiệu năng, mà còn là một yêu cầu mang tính tất yếu để đảm bảo tính khả thi và độ tin cậy của hệ thống trong ứng dụng quản lý bãi đỗ xe thông minh.
