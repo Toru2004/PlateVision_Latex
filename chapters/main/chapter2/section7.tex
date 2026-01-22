@@ -13,29 +13,39 @@ Các mô hình AI được huấn luyện trên GPU NVIDIA RTX 3060 với framew
 \end{itemize}
 
 \subsubsection{Kết quả huấn luyện}
-
 \begin{table}[H]
+\centering
 \caption{Kết quả huấn luyện YOLO - Nhận diện biển số}
 \label{tab:yolo_lp}
-\centering
-\begin{tabular}{ccccccc}
-\toprule
-Epoch & Train Loss & Val Loss & Precision & Recall & mAP50 & mAP50-95 \\
-\midrule
-1 & 0.6933 & 0.6457 & 0.9654 & 0.9091 & 0.9716 & 0.7895 \\
-5 & 0.6675 & 0.5984 & 0.9702 & 0.9643 & 0.9862 & 0.8406 \\
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\textbf{Epoch} & \textbf{Train Loss} & \textbf{Val Loss} & \textbf{Precision} & \textbf{Recall} & \textbf{mAP50} & \textbf{mAP50-95} \\
+\hline
+1  & 0.6933 & 0.6457 & 0.9654 & 0.9091 & 0.9716 & 0.7895 \\
+\hline
+5  & 0.6675 & 0.5984 & 0.9702 & 0.9643 & 0.9862 & 0.8406 \\
+\hline
 10 & 0.6133 & 0.5525 & 0.9823 & 0.9656 & 0.9892 & 0.8583 \\
+\hline
 15 & 0.5843 & 0.4944 & 0.9800 & 0.9690 & 0.9905 & 0.8676 \\
+\hline
 20 & 0.5596 & 0.4874 & 0.9770 & 0.9796 & 0.9910 & 0.8807 \\
+\hline
 25 & 0.5405 & 0.4858 & 0.9835 & 0.9791 & 0.9912 & 0.8816 \\
+\hline
 30 & 0.5202 & 0.4540 & 0.9895 & 0.9743 & 0.9927 & 0.8977 \\
+\hline
 35 & 0.5096 & 0.4457 & 0.9858 & 0.9813 & 0.9923 & 0.9022 \\
+\hline
 40 & 0.4885 & 0.4446 & 0.9824 & 0.9900 & 0.9926 & 0.9022 \\
+\hline
 45 & 0.4306 & 0.4317 & 0.9850 & 0.9879 & 0.9922 & 0.9086 \\
+\hline
 50 & 0.4087 & 0.4249 & 0.9889 & 0.9853 & 0.9923 & 0.9135 \\
-\bottomrule
+\hline
 \end{tabular}
 \end{table}
+
 
 \begin{figure}[H]
     \centering
@@ -56,27 +66,38 @@ Epoch & Train Loss & Val Loss & Precision & Recall & mAP50 & mAP50-95 \\
 \end{itemize}
 
 \begin{table}[H]
+\centering
 \caption{Kết quả huấn luyện YOLO - Nhận diện vùng ký tự}
 \label{tab:yolo_char}
-\centering
-\begin{tabular}{ccccccc}
-\toprule
-Epoch & Train Loss & Val Loss & Precision & Recall & mAP50 & mAP50-95 \\
-\midrule
-1 & 1.1925 & 0.9819 & 0.0246 & 1.0000 & 0.6042 & 0.4307 \\
-5 & 0.9159 & 1.2791 & 0.4872 & 0.3853 & 0.3084 & 0.2201 \\
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\textbf{Epoch} & \textbf{Train Loss} & \textbf{Val Loss} & \textbf{Precision} & \textbf{Recall} & \textbf{mAP50} & \textbf{mAP50-95} \\
+\hline
+1  & 1.1925 & 0.9819 & 0.0246 & 1.0000 & 0.6042 & 0.4307 \\
+\hline
+5  & 0.9159 & 1.2791 & 0.4872 & 0.3853 & 0.3084 & 0.2201 \\
+\hline
 10 & 0.9071 & 0.9219 & 0.7313 & 0.8872 & 0.7986 & 0.5922 \\
+\hline
 15 & 0.8572 & 0.8575 & 0.7494 & 0.8656 & 0.8144 & 0.6223 \\
+\hline
 20 & 0.8336 & 0.8406 & 0.8235 & 0.8858 & 0.9167 & 0.7102 \\
+\hline
 25 & 0.8158 & 0.8831 & 0.7289 & 0.8515 & 0.7964 & 0.5995 \\
+\hline
 30 & 0.8347 & 0.8793 & 0.7545 & 0.7165 & 0.7981 & 0.5920 \\
+\hline
 35 & 0.8075 & 0.8194 & 0.7873 & 0.9304 & 0.8988 & 0.7102 \\
+\hline
 40 & 0.7880 & 0.9069 & 0.8073 & 0.9079 & 0.8894 & 0.6614 \\
+\hline
 45 & 0.7862 & 0.8232 & 0.8159 & 0.8912 & 0.8956 & 0.7017 \\
+\hline
 50 & 0.7757 & 0.8548 & 0.8473 & 0.6986 & 0.8608 & 0.6630 \\
-\bottomrule
+\hline
 \end{tabular}
 \end{table}
+
 
 \begin{figure}[H]
     \centering
@@ -95,37 +116,56 @@ Epoch & Train Loss & Val Loss & Precision & Recall & mAP50 & mAP50-95 \\
     \item Kiến trúc: YOLOv8m (medium) - cân bằng accuracy và speed
     \item Epochs: 50, Batch size: 16
 \end{itemize}
-
 \begin{table}[H]
+\centering
 \caption{Kết quả huấn luyện YOLO - Nhận diện logo xe}
 \label{tab:yolo_logo}
-\centering
-\begin{tabular}{ccccc}
-\toprule
+\begin{tabular}{|c|c|c|c|c|}
+\hline
 \textbf{Epoch} & \textbf{Precision} & \textbf{Recall} & \textbf{mAP@50} & \textbf{mAP@50--95} \\
-\midrule
+\hline
 1   & 0.00331 & 0.36364 & 0.03150 & 0.01596 \\
+\hline
 5   & 0.00556 & 0.42424 & 0.25907 & 0.21921 \\
+\hline
 10  & 0.96976 & 0.27848 & 0.38029 & 0.31392 \\
+\hline
 15  & 0.63940 & 0.60441 & 0.68970 & 0.54977 \\
+\hline
 20  & 0.79072 & 0.73299 & 0.80746 & 0.62392 \\
+\hline
 25  & 0.72315 & 0.78283 & 0.83027 & 0.63635 \\
+\hline
 30  & 0.90837 & 0.89411 & 0.92853 & 0.70909 \\
+\hline
 35  & 0.87781 & 0.86027 & 0.92734 & 0.71647 \\
+\hline
 40  & 0.97077 & 0.85941 & 0.94044 & 0.71874 \\
+\hline
 45  & 0.90830 & 0.89363 & 0.93907 & 0.72093 \\
+\hline
 50  & 0.86308 & 0.93522 & 0.93975 & 0.71326 \\
+\hline
 55  & 0.92155 & 0.91498 & 0.94362 & 0.71268 \\
+\hline
 60  & 0.93237 & 0.87490 & 0.94299 & 0.74959 \\
+\hline
 65  & 0.93518 & 0.86485 & 0.94762 & 0.74221 \\
+\hline
 70  & 0.91309 & 0.90545 & 0.95270 & 0.75898 \\
+\hline
 75  & 0.91034 & 0.91939 & 0.95072 & 0.73651 \\
+\hline
 80  & 0.92377 & 0.90975 & 0.94294 & 0.72788 \\
+\hline
 85  & 0.86946 & 0.93013 & 0.94294 & 0.73635 \\
+\hline
 90  & 0.88478 & 0.91513 & 0.94425 & 0.73251 \\
+\hline
 95  & 0.95819 & 0.88112 & 0.95619 & 0.73353 \\
+\hline
 100 & 0.95881 & 0.88468 & 0.95561 & 0.75080 \\
-\bottomrule
+\hline
 \end{tabular}
 \end{table}
 

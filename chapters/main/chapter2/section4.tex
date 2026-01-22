@@ -34,9 +34,93 @@
 
 Hệ thống trạm ra/vào bãi đỗ xe thông minh được đề xuất nhằm tự động hóa hoàn toàn quá trình kiểm soát phương tiện, giảm thiểu sự can thiệp của con người và nâng cao hiệu quả quản lý. Kiến trúc hệ thống được thiết kế theo hướng phân tầng và mô-đun hóa, cho phép tích hợp ML, ứng dụng di động và hệ thống giám sát trong cùng một mô hình thống nhất.
 
-Về tổng thể, hệ thống bao gồm bảy thành phần chính: trạm quét triển khai tại cổng ra/vào do bảo vệ vận hành, đóng vai trò trung tâm xử lý AI; ứng dụng Mobile phục vụ hai đối tượng người dùng với hai giao diện khác nhau - sinh viên sử dụng để quản lý phương tiện và xem lịch sử ra/vào, bảo vệ sử dụng để giám sát và xử lý các tình huống đặc biệt; Web Dashboard dành cho quản trị viên quản lý toàn bộ hệ thống; nền tảng Firebase cung cấp dịch vụ xác thực (Authentication), lưu trữ dữ liệu lịch sử (Firestore) và bãi đỗ ảo theo thời gian thực (Realtime Database); Cloudinary lưu trữ hình ảnh; camera thu thập hình ảnh phương tiện; và thiết bị IoT điều khiển tự động cổng ra/vào. Các thành phần này giao tiếp với nhau thông qua Internet, đảm bảo khả năng đồng bộ dữ liệu theo thời gian thực.
 
-Luồng hoạt động cơ bản của hệ thống như sau: khi phương tiện tiếp cận trạm vào, camera tự động thu nhận hình ảnh và truyền dữ liệu về trạm quét. Tại đây, mô hình ML thực hiện nhận diện biển số xe. Kết quả nhận diện được đối chiếu với dữ liệu lưu trữ trên Firebase để xác thực quyền vào và kiểm tra số lượt còn lại. Nếu hợp lệ, hệ thống tự động cập nhật trạng thái mở cổng lên Realtime Database, thiết bị IoT nhận tín hiệu và điều khiển cổng mở, đồng thời ghi thông tin xe vào Realtime Database (đóng vai trò bãi đỗ ảo) và Firestore (lưu lịch sử). Ứng dụng Mobile của sinh viên nhận được cập nhật trạng thái xe vào bãi theo thời gian thực, số lượt còn lại cũng được trừ đi tự động. Khi xe ra bãi, nếu sinh viên đã ấn nút "Chuẩn bị rời đi" trên app, xe được phép ra và thông tin xe tự động xóa khỏi Realtime Database. Nếu xe cố gắng ra mà không có yêu cầu rời đi, hệ thống kích hoạt cảnh báo tức thì đến Mobile App của sinh viên, bảo vệ và admin thông qua Realtime Database.
+\subsubsection{Các thành phần chính của hệ thống}
+
+Về tổng thể, hệ thống bao gồm 7 thành phần chính như sau:
+
+\begin{itemize}
+    \item \textbf{Trạm quét (desktop app):} 
+    Được triển khai tại cổng ra/vào và do bảo vệ vận hành. Đây là thành phần trung tâm xử lý AI, thực hiện thu nhận hình ảnh và nhận diện biển số xe.
+
+    \item \textbf{Ứng dụng Mobile:} 
+    Phục vụ hai nhóm người dùng với hai giao diện riêng biệt:
+    \begin{itemize}
+        \item \textbf{Sinh viên:} dùng để quản lý phương tiện cá nhân và xem lịch sử ra/vào bãi xe.
+        \item \textbf{Bảo vệ:} dùng để giám sát hệ thống và xử lý các tình huống đặc biệt.
+    \end{itemize}
+
+    \item \textbf{Web Dashboard (dành cho quản trị viên):} 
+    Cho phép quản lý toàn bộ hệ thống, người dùng, phương tiện và theo dõi trạng thái bãi xe.
+
+    \item \textbf{Firebase:} 
+    Cung cấp các dịch vụ nền tảng bao gồm:
+    \begin{itemize}
+        \item \textbf{Authentication:} xác thực người dùng.
+        \item \textbf{Firestore:} lưu trữ dữ liệu lịch sử ra/vào.
+        \item \textbf{Realtime Database:} quản lý bãi đỗ ảo và đồng bộ trạng thái theo thời gian thực.
+    \end{itemize}
+
+    \item \textbf{Cloudinary:} 
+    Dùng để lưu trữ hình ảnh phương tiện được chụp tại trạm quét.
+
+    \item \textbf{Camera:} 
+    Có nhiệm vụ thu thập hình ảnh phương tiện tại cổng ra/vào.
+
+    \item \textbf{Thiết bị IoT điều khiển cổng:} 
+    Nhận tín hiệu từ hệ thống và thực hiện đóng/mở cổng tự động.
+\end{itemize}
+
+Tất cả các thành phần trên giao tiếp với nhau thông qua Internet, đảm bảo khả năng đồng bộ dữ liệu theo thời gian thực.
+
+\subsubsection{Luồng hoạt động của hệ thống}
+
+Luồng hoạt động cơ bản của hệ thống được mô tả theo các bước sau:
+
+\begin{enumerate}
+    \item Khi phương tiện tiếp cận cổng vào, camera tự động thu nhận hình ảnh và gửi về \textbf{trạm quét}.
+
+    \item Tại trạm quét, mô hình học máy (ML) thực hiện nhận diện biển số xe từ hình ảnh đầu vào.
+
+    \item Kết quả nhận diện được đối chiếu với dữ liệu trên Firebase để:
+    \begin{itemize}
+        \item Xác thực quyền vào bãi.
+        \item Kiểm tra số lượt vào còn lại.
+    \end{itemize}
+
+    \item Nếu hợp lệ, hệ thống thực hiện đồng thời các thao tác:
+    \begin{itemize}
+        \item Cập nhật trạng thái mở cổng lên Realtime Database.
+        \item Thiết bị IoT nhận tín hiệu và điều khiển cổng mở.
+        \item Ghi thông tin xe vào:
+        \begin{itemize}
+            \item Realtime Database: đóng vai trò bãi đỗ ảo.
+            \item Firestore: lưu lịch sử ra/vào.
+        \end{itemize}
+        \item Ứng dụng Mobile của sinh viên nhận cập nhật trạng thái theo thời gian thực.
+        \item Số lượt còn lại của sinh viên tự động bị trừ.
+    \end{itemize}
+
+    \item Khi phương tiện ra khỏi bãi:
+    \begin{itemize}
+        \item Nếu sinh viên đã nhấn nút ``Chuẩn bị rời đi'' trên ứng dụng:
+        \begin{itemize}
+            \item Hệ thống cho phép xe ra.
+            \item Thông tin xe được xóa khỏi Realtime Database.
+        \end{itemize}
+
+        \item Nếu xe cố gắng ra mà chưa có yêu cầu rời đi:
+        \begin{itemize}
+            \item Hệ thống kích hoạt cảnh báo tức thì.
+            \item Thông báo được gửi đến:
+            \begin{itemize}
+                \item Ứng dụng Mobile của sinh viên.
+                \item Ứng dụng của bảo vệ.
+                \item Trang quản trị của admin.
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
 
 \subsection{Các thành phần chính}
 
