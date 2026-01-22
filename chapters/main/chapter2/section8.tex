@@ -2,7 +2,170 @@
 
 \subsection{Hệ thống thiết bị trong môi trường triển khai}
 
+Hệ thống PlateVision được triển khai trên nền tảng phần cứng nhúng sử dụng vi điều khiển ESP32 kết hợp với các linh kiện điện tử hỗ trợ. Hệ thống bao gồm các thành phần chính sau:
+
+\begin{itemize}
+    \item \textbf{Vi điều khiển ESP32}: Đóng vai trò là bộ xử lý trung tâm, chịu trách nhiệm điều khiển toàn bộ hệ thống, giao tiếp với server thông qua kết nối WiFi, và quản lý các thiết bị ngoại vi.
+    
+    \item \textbf{Màn hình LCD 16x2}: Hiển thị thông tin trạng thái hoạt động của hệ thống, kết quả nhận dạng biển số xe, và các thông báo hệ thống theo thời gian thực.
+    
+    \item \textbf{Module relay}: Điều khiển cơ cấu chấp hành như động cơ servo hoặc rào chắn, cho phép mở/đóng cổng tự động dựa trên kết quả nhận dạng và xác thực biển số xe.
+    
+    \item \textbf{Cảm biến tác động}: Phát hiện các tác động bất thường lên cổng, giúp tăng cường an ninh và bảo vệ hệ thống khỏi các hành vi phá hoại.
+    
+    \item \textbf{Breadboard và dây kết nối}: Tạo các kết nối điện giữa các linh kiện, đảm bảo tính linh hoạt trong quá trình phát triển và thử nghiệm hệ thống.
+    
+    \item \textbf{Nguồn cấp điện}: Cung cấp nguồn điện ổn định cho toàn bộ hệ thống thông qua cổng USB hoặc nguồn ngoài.
+\end{itemize}
+
+Hệ thống hoạt động theo ba trạng thái chính, được minh họa qua các hình ảnh sau:
+
+\subsubsection{Trạng thái cổng đóng}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{graphics/main/chapter2/linh_kien_cong_dong.jpg}
+    \caption{Trạng thái cổng đang đóng}
+    \label{fig:linh_kien_cong_dong}
+\end{figure}
+
+Hình \ref{fig:linh_kien_cong_dong} thể hiện trạng thái mặc định của hệ thống khi cổng đang ở vị trí đóng. Màn hình LCD hiển thị thông báo \textbf{"Cổng đã đóng"}, cho biết rào chắn đang ở trạng thái khóa và không cho phép phương tiện đi qua. Đây là trạng thái an toàn của hệ thống, đảm bảo chỉ những phương tiện được xác thực mới có thể vào/ra.
+
+Trong trạng thái này:
+\begin{itemize}
+    \item Module relay duy trì tín hiệu điều khiển để giữ cổng ở vị trí đóng
+    \item Hệ thống sẵn sàng nhận tín hiệu từ camera để bắt đầu quá trình nhận dạng biển số
+    \item Cảm biến tác động đang hoạt động để phát hiện bất kỳ can thiệp bất thường nào
+\end{itemize}
+
+\subsubsection{Trạng thái cổng mở sau khi quét}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{graphics/main/chapter2/linh_kien_cong_mo.jpg}
+    \caption{Trạng thái cổng đang mở sau khi nhận dạng thành công}
+    \label{fig:linh_kien_cong_mo}
+\end{figure}
+
+Sau khi hệ thống camera quét và nhận dạng thành công biển số xe cũng như khuôn mặt người điều khiển, hệ thống chuyển sang trạng thái mở cổng như minh họa trong Hình \ref{fig:linh_kien_cong_mo}. Màn hình LCD hiển thị thông báo \textbf{"Cổng đang mở"}, xác nhận rằng phương tiện đã được xác thực và được phép đi qua.
+
+Quá trình chuyển đổi trạng thái diễn ra như sau:
+\begin{itemize}
+    \item Camera gửi hình ảnh biển số và khuôn mặt đến server để xử lý
+    \item Server thực hiện nhận dạng và so sánh với cơ sở dữ liệu
+    \item Nếu xác thực thành công, server gửi lệnh mở cổng đến ESP32
+    \item ESP32 kích hoạt module relay để điều khiển cơ cấu chấp hành mở cổng
+    \item Màn hình LCD cập nhật trạng thái "Cổng đang mở"
+    \item Sau một khoảng thời gian nhất định hoặc khi phương tiện đã đi qua, cổng tự động đóng lại
+\end{itemize}
+
+\subsubsection{Trạng thái phát hiện tác động}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{graphics/main/chapter2/linh_kien_cong_co_tac_dong.jpg}
+    \caption{Trạng thái phát hiện có tác động lên cổng}
+    \label{fig:linh_kien_cong_co_tac_dong}
+\end{figure}
+
+Hình \ref{fig:linh_kien_cong_co_tac_dong} minh họa trạng thái cảnh báo khi hệ thống phát hiện có tác động bất thường lên cổng. Màn hình LCD hiển thị thông báo \textbf{"Có tác động"} (có tác động), cảnh báo về khả năng có người đang cố gắng can thiệp hoặc phá hoại cổng mà không thông qua quy trình xác thực hợp lệ.
+
+Cơ chế phát hiện và xử lý tác động:
+\begin{itemize}
+    \item Cảm biến tác động liên tục giám sát các rung động hoặc lực tác động lên cổng
+    \item Khi phát hiện tác động vượt ngưỡng cho phép, cảm biến gửi tín hiệu đến ESP32
+    \item ESP32 ngay lập tức cập nhật trạng thái trên màn hình LCD
+    \item Hệ thống gửi cảnh báo đến server và có thể kích hoạt các biện pháp an ninh bổ sung như:
+    \begin{itemize}
+        \item Ghi lại thời gian và hình ảnh từ camera
+        \item Gửi thông báo đến quản trị viên
+        \item Kích hoạt còi báo động (nếu có)
+        \item Khóa cứng cổng để ngăn chặn xâm nhập
+    \end{itemize}
+    \item Trạng thái cảnh báo được duy trì cho đến khi quản trị viên xác nhận và reset hệ thống
+\end{itemize}
+
+Hệ thống phần cứng được thiết kế nhỏ gọn, tiết kiệm năng lượng và dễ dàng tích hợp vào các môi trường thực tế như bãi đỗ xe, khu chung cư, hoặc cổng ra vào doanh nghiệp. Ba trạng thái hoạt động trên đảm bảo hệ thống vừa thuận tiện cho người dùng hợp lệ, vừa bảo vệ an ninh hiệu quả.
+
 \subsection{Trường hợp nhận dạng phương tiện xe máy}
 
+Hệ thống PlateVision đã được thử nghiệm với nhiều trường hợp nhận dạng biển số xe máy trong điều kiện thực tế. Hình \ref{fig:quet_xe_may_before} và \ref{fig:quet_xe_may_result} minh họa quá trình nhận dạng và kết quả thu được.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{graphics/main/chapter2/quet_xe_may_before.jpg}
+    \caption{Giao diện quét xe máy trước khi nhận dạng}
+    \label{fig:quet_xe_may_before}
+\end{figure}
+
+Giao diện quét xe máy (Hình \ref{fig:quet_xe_may_before}) hiển thị các thông tin quan trọng:
+
+\begin{itemize}
+    \item \textbf{Thời gian vào}: 5000 milliseconds (5 giây), cho biết thời gian chờ tối đa trước khi hệ thống tự động xử lý.
+    \item \textbf{Trạng thái}: Hiển thị các ô "Quét xe máy vào" và "Quét xe máy ra" để phân biệt hướng di chuyển của phương tiện.
+    \item \textbf{Khu vực hiển thị ảnh}: Các ô màu xám dành cho việc hiển thị hình ảnh biển số và khuôn mặt sau khi quét.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{graphics/main/chapter2/quet_xe_may_result.jpg}
+    \caption{Kết quả nhận dạng biển số xe máy}
+    \label{fig:quet_xe_may_result}
+\end{figure}
+
+Kết quả nhận dạng (Hình \ref{fig:quet_xe_may_result}) cho thấy:
+
+\begin{itemize}
+    \item \textbf{Thời gian}: Hệ thống ghi nhận thời gian vào lúc 06:31:24 và thời gian ra lúc 06:32:33, cho phép tính toán thời gian đỗ xe chính xác.
+    
+    \item \textbf{Biển số}: Hệ thống đã nhận dạng thành công biển số xe máy \textbf{78-K1 287.59}. Kết quả được hiển thị dưới dạng hai hình ảnh biển số được chụp từ camera, cho phép so sánh và xác thực.
+    
+    \item \textbf{Khuôn mặt}: Hệ thống cũng ghi nhận hình ảnh khuôn mặt của người điều khiển phương tiện, hỗ trợ việc xác thực danh tính và tăng cường an ninh.
+    
+    \item \textbf{Độ chính xác}: Cả hai lần quét (vào và ra) đều nhận dạng đúng biển số, chứng tỏ tính ổn định và độ tin cậy cao của thuật toán.
+\end{itemize}
+
+Trường hợp này minh chứng khả năng nhận dạng chính xác biển số xe máy của hệ thống trong điều kiện ánh sáng tự nhiên và góc chụp thực tế.
+
 \subsection{Trường hợp nhận dạng phương tiện ô tô}
+
+Tương tự như trường hợp xe máy, hệ thống cũng được thử nghiệm với phương tiện ô tô. Hình \ref{fig:quet_o_to_before} và \ref{fig:quet_o_to_result} trình bày giao diện và kết quả nhận dạng.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{graphics/main/chapter2/quet_o_to_before.jpg}
+    \caption{Giao diện quét ô tô trước khi nhận dạng}
+    \label{fig:quet_o_to_before}
+\end{figure}
+
+Giao diện quét ô tô (Hình \ref{fig:quet_o_to_before}) có cấu trúc tương tự giao diện xe máy nhưng được tối ưu cho phương tiện ô tô:
+
+\begin{itemize}
+    \item \textbf{Thời gian vào}: 5000 milliseconds (5 giây), đảm bảo đủ thời gian để hệ thống xử lý hình ảnh ô tô có kích thước lớn hơn.
+    \item \textbf{Phân luồng}: Giao diện phân biệt rõ ràng giữa "Vào" và "Ra" với các ô "Chưa có ô tô" ở cả hai bên.
+    \item \textbf{Trạng thái quét}: Hiển thị "Quét xe ô tô vào" và "Quét xe ô tô ra" với màu vàng nổi bật để dễ dàng nhận biết.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{graphics/main/chapter2/quet_o_to_result.jpg}
+    \caption{Kết quả nhận dạng biển số ô tô}
+    \label{fig:quet_o_to_result}
+\end{figure}
+
+Kết quả nhận dạng ô tô (Hình \ref{fig:quet_o_to_result}) thể hiện:
+
+\begin{itemize}
+    \item \textbf{Thời gian}: Thời gian vào được ghi nhận lúc 06:11:12 và thời gian ra lúc 06:32:25, cho phép quản lý thời gian đỗ xe hiệu quả.
+    
+    \item \textbf{Biển số}: Hệ thống nhận dạng chính xác biển số ô tô với hai hình ảnh được chụp từ phía sau xe. Kết quả cho thấy biển số được đọc rõ ràng và chính xác.
+    
+    \item \textbf{Hình xe}: Ngoài biển số, hệ thống còn lưu trữ hình ảnh toàn cảnh phương tiện, giúp xác định loại xe, màu sắc và các đặc điểm nhận dạng khác.
+    
+    \item \textbf{Logo xe}: Hệ thống cũng có khả năng nhận dạng logo thương hiệu xe (trong trường hợp này là BMW), cung cấp thêm thông tin về phương tiện.
+    
+    \item \textbf{Tính nhất quán}: Cả hai lần quét (vào và ra) đều cho kết quả nhận dạng chính xác, chứng tỏ hệ thống hoạt động ổn định trong thời gian dài.
+\end{itemize}
+
+Trường hợp nhận dạng ô tô này cho thấy hệ thống PlateVision có khả năng xử lý đa dạng loại phương tiện với độ chính xác cao, đáp ứng yêu cầu của các hệ thống quản lý bãi đỗ xe thông minh trong thực tế.
 
