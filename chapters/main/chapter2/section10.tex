@@ -1,0 +1,156 @@
+\section{Tiêu chí đánh giá và phương pháp kiểm định}
+
+\subsection{Tiêu chí đánh giá hiệu năng kỹ thuật}
+
+Hệ thống được đánh giá dựa trên hai nhóm chỉ số: chỉ số định lượng về hiệu năng AI models và chỉ số định tính về chất lượng phần mềm.
+\subsubsection{Chỉ số định lượng - AI Models}
+
+\begin{table}[H]
+\caption{Tiêu chí đánh giá định lượng cho AI models}
+\label{tab:quantitative_criteria}
+\centering
+\begin{tabular}{|l|l|c|l|}
+\hline
+\textbf{Mô hình} & \textbf{Chỉ số chính} & \textbf{Ngưỡng tối thiểu} & \textbf{Lý do} \\
+\hline
+YOLO (Detection) & mAP50, Precision, Recall & $\geq$ 90\% & Đảm bảo phát hiện chính xác \\
+\hline
+CNN (Classification) & Accuracy & $\geq$ 95\% & Nhận dạng ký tự không sai \\
+\hline
+Siamese Network & Accuracy, AUC-ROC & $\geq$ 95\% & So khớp xe chính xác \\
+\hline
+DeepFace & Accuracy, FPR/FNR & $\geq$ 95\% & Xác thực người dùng \\
+\hline
+\multicolumn{4}{|l|}{\textbf{Hiệu năng thời gian thực}} \\
+\hline
+Thời gian xử lý & Processing time/frame & $\leq$ 10s & Không gây chậm trễ \\
+\hline
+RAM usage & Memory consumption & $\leq$ 8GB & Chạy trên máy thông thường \\
+\hline
+FPS & Frames per second & $\geq$ 10 FPS & Đủ cho real-time \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Chỉ số định tính - Chất lượng hệ thống}
+
+\begin{itemize}
+    \item \textbf{Robustness (Tính bền vững):} Khả năng hoạt động ổn định trong điều kiện khác nhau (ánh sáng yếu, biển bẩn, góc quay)
+    \item \textbf{Reliability (Độ tin cậy):} Tỷ lệ lỗi thấp trong vận hành liên tục, không crash
+    \item \textbf{Usability (Tính khả dụng):} Giao diện dễ sử dụng, thời gian phản hồi nhanh
+    \item \textbf{Maintainability (Tính bảo trì):} Code có cấu trúc tốt, dễ mở rộng và sửa lỗi
+\end{itemize}
+
+\subsection{Tiêu chí đánh giá chức năng nghiệp vụ}
+
+Các chức năng nghiệp vụ được đánh giá dựa trên khả năng đáp ứng yêu cầu thực tế của bãi đỗ xe thông minh.
+\subsection{Tiêu chí đánh giá chức năng nghiệp vụ}
+
+Các chức năng nghiệp vụ được đánh giá dựa trên khả năng đáp ứng yêu cầu thực tế của từng module trong hệ thống.
+
+\subsubsection{Module Camera quét cổng ra/vào}
+
+\begin{table}[H]
+\caption{Tiêu chí đánh giá Module Camera quét cổng ra/vào}
+\label{tab:criteria_camera}
+\centering
+\begin{tabular}{|p{4.5cm}|p{5.5cm}|p{3cm}|}
+\hline
+\textbf{Chức năng} & \textbf{Tiêu chí kiểm tra} & \textbf{Ngưỡng} \\
+\hline
+Nhận diện biển số & Tỷ lệ nhận diện đúng trong điều kiện chuẩn & $\geq$ 95\% \\
+\hline
+Nhận diện khuôn mặt & Tỷ lệ xác thực đúng người lái xe máy & $\geq$ 95\% \\
+\hline
+Nhận diện logo xe & Tỷ lệ nhận diện đúng logo ô tô & $\geq$ 75\% \\
+\hline
+So khớp đầu xe (Siamese) & Tỷ lệ khớp đúng cặp xe vào/ra & $\geq$ 95\% \\
+\hline
+Hiển thị hình ảnh real-time & Hiển thị hình ảnh từ camera & $\geq$ 15 FPS \\
+\hline
+Thống kê xe vào/ra & Cập nhật số liệu real-time & 100\% \\
+\hline
+Thời gian xử lý & Từ nhận diện đến ghi Firebase & $\leq$ 5s \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Module quản lý bãi đỗ}
+
+\begin{table}[H]
+\caption{Tiêu chí đánh giá Module quản lý bãi đỗ}
+\label{tab:criteria_management}
+\centering
+\begin{tabular}{|p{4.5cm}|p{5.5cm}|p{3cm}|}
+\hline
+\textbf{Chức năng} & \textbf{Tiêu chí kiểm tra} & \textbf{Ngưỡng} \\
+\hline
+Lưu trữ dữ liệu & Tính toàn vẹn dữ liệu trên Firebase & 100\% \\
+\hline
+Đồng bộ real-time & Đồng bộ giữa Desktop và Mobile & $\leq$ 2s \\
+\hline
+Tính toán phí đỗ xe & Tính phí chính xác theo lượt & 100\% \\
+\hline
+Cảnh báo xe lạ & Phát hiện và gửi cảnh báo khi bất thường & 100\% \\
+
+\hline
+Backup dữ liệu & Lưu lịch sử vào Firestore đầy đủ & 100\% \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Module Mobile Application}
+
+\begin{table}[H]
+\caption{Tiêu chí đánh giá Module Mobile Application}
+\label{tab:criteria_mobile}
+\centering
+\begin{tabular}{|p{4.5cm}|p{5.5cm}|p{3cm}|}
+\hline
+\textbf{Chức năng} & \textbf{Tiêu chí kiểm tra} & \textbf{Ngưỡng} \\
+\hline
+Đăng ký/Đăng nhập & Xác thực Firebase Authentication & 100\% \\
+\hline
+Quản lý xe & CRUD thông tin xe (thêm/sửa/xóa) & 100\% \\
+\hline
+Xác nhận rời bãi & Hiển thị mã QR và gửi thông báo & 100\% \\
+\hline
+Thanh toán VNPAY & Xử lý giao dịch chính xác & 100\% \\
+\hline
+Nhận push notification & Nhận FCM notification & $\leq$ 5s \\
+\hline
+Xem lịch sử & Hiển thị lịch sử từ Firestore & 100\% \\
+\hline
+Tương thích thiết bị & Chạy mượt trên Android 8.0 - 14 & 100\% \\
+\hline
+Đồng bộ real-time & Cập nhật danh sách xe từ Firebase & $\leq$ 2s \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Module IoT Hardware}
+
+\begin{table}[H]
+\caption{Tiêu chí đánh giá Module IoT Hardware}
+\label{tab:criteria_iot}
+\centering
+\begin{tabular}{|p{4.5cm}|p{5.5cm}|p{3cm}|}
+\hline
+\textbf{Chức năng} & \textbf{Tiêu chí kiểm tra} & \textbf{Ngưỡng} \\
+\hline
+Kết nối ESP32 - Firebase & Duy trì kết nối WiFi ổn định & $\geq$ 99\% \\
+\hline
+Điều khiển Servo & Thời gian từ nhận lệnh đến mở barrier & $\leq$ 1s \\
+\hline
+Cảm biến siêu âm & Phát hiện xe trong phạm vi 2-400cm & $\geq$ 95\% \\
+
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Ghi chú:}
+\begin{itemize}
+    \item Các chức năng có ngưỡng 100\% là chức năng quan trọng không được phép sai
+    \item Các chức năng AI/ML có ngưỡng 75-95\% do tính chất xác suất
+    \item Thời gian được đo trong điều kiện mạng ổn định (WiFi 5GHz)
+\end{itemize}
