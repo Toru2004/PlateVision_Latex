@@ -98,6 +98,12 @@ Hệ thống PlateVision đã được thử nghiệm với nhiều trường h�
     \label{fig:quet_xe_may_before}
 \end{figure}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{graphics/main/chapter2/quet_xemay2.jpg}
+    \caption{Giao diện quét xe máy sau khi nhận dạng}
+    \label{fig:quet_xe_may2}
+\end{figure}
 Giao diện quét xe máy (Hình \ref{fig:quet_xe_may_before}) hiển thị các thông tin quan trọng:
 
 \begin{itemize}
@@ -106,12 +112,12 @@ Giao diện quét xe máy (Hình \ref{fig:quet_xe_may_before}) hiển thị các
     \item \textbf{Khu vực hiển thị ảnh}: Các ô màu xám dành cho việc hiển thị hình ảnh biển số và khuôn mặt sau khi quét.
 \end{itemize}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{graphics/main/chapter2/quet_xe_may_result.jpg}
-    \caption{Kết quả nhận dạng biển số xe máy}
-    \label{fig:quet_xe_may_result}
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.5\textwidth]{graphics/main/chapter2/quet_xe_may_result.jpg}
+%     \caption{Kết quả nhận dạng biển số xe máy}
+%     \label{fig:quet_xe_may_result}
+% \end{figure}
 
 Kết quả nhận dạng (Hình \ref{fig:quet_xe_may_result}) cho thấy:
 
@@ -138,17 +144,18 @@ Tương tự như trường hợp xe máy, hệ thống cũng được thử ngh
     \label{fig:quet_o_to_before}
 \end{figure}
 
+
 Giao diện quét ô tô (Hình \ref{fig:quet_o_to_before}) có cấu trúc tương tự giao diện xe máy nhưng được tối ưu cho phương tiện ô tô:
 
 \begin{itemize}
-    \item \textbf{Thời gian vào}: 5000 milliseconds (5 giây), đảm bảo đủ thời gian để hệ thống xử lý hình ảnh ô tô có kích thước lớn hơn.
+    \item \textbf{Thời gian vào}: 5 giây, đảm bảo đủ thời gian để hệ thống xử lý hình ảnh ô tô có kích thước lớn hơn.
     \item \textbf{Phân luồng}: Giao diện phân biệt rõ ràng giữa "Vào" và "Ra" với các ô "Chưa có ô tô" ở cả hai bên.
     \item \textbf{Trạng thái quét}: Hiển thị "Quét xe ô tô vào" và "Quét xe ô tô ra" với màu vàng nổi bật để dễ dàng nhận biết.
 \end{itemize}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{graphics/main/chapter2/quet_o_to_result.jpg}
+    \includegraphics[width=0.8\textwidth]{graphics/main/chapter2/quet_oto.jpg}
     \caption{Kết quả nhận dạng biển số ô tô}
     \label{fig:quet_o_to_result}
 \end{figure}
