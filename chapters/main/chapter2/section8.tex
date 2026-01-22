@@ -87,7 +87,7 @@ Cơ chế phát hiện và xử lý tác động:
 
 Hệ thống phần cứng được thiết kế nhỏ gọn, tiết kiệm năng lượng và dễ dàng tích hợp vào các môi trường thực tế như bãi đỗ xe, khu chung cư, hoặc cổng ra vào doanh nghiệp. Ba trạng thái hoạt động trên đảm bảo hệ thống vừa thuận tiện cho người dùng hợp lệ, vừa bảo vệ an ninh hiệu quả.
 
-\subsection{Trường hợp nhận dạng phương tiện xe máy}
+\subsection{Giao diện hệ thống}
 
 Hệ thống PlateVision đã được thử nghiệm với nhiều trường hợp nhận dạng biển số xe máy trong điều kiện thực tế. Hình \ref{fig:quet_xe_may_before} và \ref{fig:quet_xe_may_result} minh họa quá trình nhận dạng và kết quả thu được.
 
@@ -133,7 +133,7 @@ Kết quả nhận dạng (Hình \ref{fig:quet_xe_may_result}) cho thấy:
 
 Trường hợp này minh chứng khả năng nhận dạng chính xác biển số xe máy của hệ thống trong điều kiện ánh sáng tự nhiên và góc chụp thực tế.
 
-\subsection{Trường hợp nhận dạng phương tiện ô tô}
+% \subsection{Giao diện nhận dạng phương tiện ô tô}
 
 Tương tự như trường hợp xe máy, hệ thống cũng được thử nghiệm với phương tiện ô tô. Hình \ref{fig:quet_o_to_before} và \ref{fig:quet_o_to_result} trình bày giao diện và kết quả nhận dạng.
 
@@ -163,8 +163,6 @@ Giao diện quét ô tô (Hình \ref{fig:quet_o_to_before}) có cấu trúc tư�
 Kết quả nhận dạng ô tô (Hình \ref{fig:quet_o_to_result}) thể hiện:
 
 \begin{itemize}
-    \item \textbf{Thời gian}: Thời gian vào được ghi nhận lúc 06:11:12 và thời gian ra lúc 06:32:25, cho phép quản lý thời gian đỗ xe hiệu quả.
-    
     \item \textbf{Biển số}: Hệ thống nhận dạng chính xác biển số ô tô với hai hình ảnh được chụp từ phía sau xe. Kết quả cho thấy biển số được đọc rõ ràng và chính xác.
     
     \item \textbf{Hình xe}: Ngoài biển số, hệ thống còn lưu trữ hình ảnh toàn cảnh phương tiện, giúp xác định loại xe, màu sắc và các đặc điểm nhận dạng khác.
@@ -176,3 +174,43 @@ Kết quả nhận dạng ô tô (Hình \ref{fig:quet_o_to_result}) thể hiện
 
 Trường hợp nhận dạng ô tô này cho thấy hệ thống PlateVision có khả năng xử lý đa dạng loại phương tiện với độ chính xác cao, đáp ứng yêu cầu của các hệ thống quản lý bãi đỗ xe thông minh trong thực tế.
 
+% Thêm
+Hệ thống cũng cung cấp một giao diện riêng cho người bảo vệ nhằm hỗ trợ theo dõi và quản lý quá trình nhận dạng biển số ô tô trong bãi đỗ xe. Hình \ref{fig:quet_o_to_result1} minh họa giao diện chính của người bảo vệ.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{graphics/main/chapter2/bao_ve.jpg}
+    \caption{Giao diện chính của người bảo vệ}
+    \label{fig:quet_o_to_result1}
+\end{figure}
+
+Giao diện người bảo vệ (Hình \ref{fig:quet_o_to_result1}) được thiết kế nhằm hỗ trợ công tác giám sát và xử lý các tình huống phát sinh trong quá trình vận hành bãi đỗ xe, bao gồm các chức năng chính sau:
+
+\begin{itemize}
+    \item \textbf{Thông tin tài khoản}: Hiển thị đầy đủ thông tin của người bảo vệ như tên, email và căn cước công dân (CCCD), giúp xác định rõ danh tính người thực hiện thao tác trong hệ thống.
+    \item \textbf{Tạo ủy thác mở cổng từ xa}: Giao diện cho phép người bảo vệ tạo yêu cầu mở cổng trong những trường hợp đặc biệt. Hệ thống sinh ra một mã QR để quét và gửi thông báo đến người quản lý nhằm xác nhận và thực hiện thao tác mở cổng từ xa. Đồng thời, toàn bộ các yêu cầu này được lưu lại để phục vụ công tác kiểm tra và đối soát sau này.
+
+    \item \textbf{Lịch sử hoạt động}: Cung cấp danh sách các hoạt động ra vào của phương tiện trong bãi đỗ xe, giúp người bảo vệ theo dõi, quản lý và tra cứu thông tin khi cần thiết.
+\end{itemize}
+
+Giao diện dành cho người bảo vệ góp phần nâng cao tính kiểm soát và minh bạch trong quá trình vận hành hệ thống nhận dạng biển số ô tô, đồng thời hỗ trợ xử lý linh hoạt các tình huống thực tế phát sinh tại bãi đỗ xe thông minh.
+
+Giao diện người dùng trong các trạng thái khác nhau của phương tiện được minh họa trong Hình \ref{fig:quet_o_to_result2} và Hình \ref{fig:quet_o_to_result3}. Các giao diện này phản ánh trạng thái của phương tiện sau khi đã vào bãi đỗ và khi chuẩn bị rời khỏi bãi.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{graphics/main/chapter2/dang_do.jpg}
+\caption{Giao diện người dùng khi xe đã vào bãi đỗ}
+\label{fig:quet_o_to_result2}
+\end{figure}
+
+Giao diện khi xe đã vào bãi đỗ (Hình \ref{fig:quet_o_to_result2}) hiển thị các thông tin liên quan đến trạng thái đỗ xe, bao gồm thời điểm xe vào bãi, biển số đã được nhận dạng và trạng thái “Đang đỗ”. Những thông tin này giúp người dùng dễ dàng theo dõi tình trạng phương tiện trong suốt thời gian gửi xe.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.4\textwidth]{graphics/main/chapter2/chuan_bi_roi.jpg}
+\caption{Giao diện người dùng khi chuẩn bị rời bãi}
+\label{fig:quet_o_to_result3}
+\end{figure}
+
+Khi người dùng muốn rời bãi đỗ, nhấn nút “Chuẩn bị rời” sẽ chuyển sang giao diện hiển thị trạng thái chuẩn bị rời bãi (Hình \ref{fig:quet_o_to_result3}). Điều này giúp người dùng xác nhận lại thông tin trước khi rời khỏi bãi đỗ xe.
